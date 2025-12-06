@@ -1,0 +1,25 @@
+<h3>Décompte détaillé</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Joueur</th>
+      <th>Joueur voté</th>
+      <th>Votes reçus</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for j, n in votes.items() %}
+      <tr>
+        <td>Joueur {{ j }}</td>
+        <td>
+          {% if j in joueur_vote_pour %}
+            Joueur {{ joueur_vote_pour[j] }}
+          {% else %}
+            —
+          {% endif %}
+        </td>
+        <td>{{ n }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>

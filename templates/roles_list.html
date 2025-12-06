@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Liste des rôles</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    body{
+      margin:0;
+      padding:20px;
+      background:url('/static/fond.png') center/cover no-repeat;
+      font-family:Arial,sans-serif;
+      color:#fff;
+      min-height:100vh;
+    }
+    .top-link{
+      position:fixed;
+      top:16px;
+      left:16px;
+      background:rgba(0,0,0,0.7);
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:13px;
+      text-decoration:none;
+      color:#fff;
+      border:1px solid rgba(255,255,255,0.4);
+      z-index:1000;
+    }
+    .wrap{
+      max-width:900px;
+      margin:60px auto 20px;
+      background:rgba(0,0,0,0.7);
+      padding:20px;
+      border-radius:12px;
+    }
+    h1{
+      margin-top:0;
+      margin-bottom:10px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));
+      gap:16px;
+    }
+    .card{
+      background:rgba(0,0,0,0.6);
+      border-radius:10px;
+      padding:12px;
+      display:flex;
+      flex-direction:column;
+      align-items:flex-start;
+    }
+    .card-header{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-bottom:6px;
+    }
+    .img{
+      width:56px;
+      height:56px;
+      border-radius:50%;
+      object-fit:cover;
+    }
+    .name{
+      font-weight:bold;
+    }
+    .camp{
+      font-size:12px;
+      opacity:0.8;
+    }
+    .camp-village{ color:#8f8; }
+    .camp-demons{ color:#f88; }
+    .desc{
+      font-size:13px;
+      margin-top:6px;
+      line-height:1.4;
+    }
+  </style>
+</head>
+<body>
+
+  <a class="top-link" href="{{ previous_url }}">← Retour</a>
+
+  <div class="wrap">
+    <h1>Liste des rôles</h1>
+    <p style="font-size:13px;opacity:0.8;margin-bottom:16px">
+      Cette page présente tous les rôles et leurs effets. Les joueurs peuvent la consulter à tout moment.
+    </p>
+
+    <div class="grid">
+      {% for r in roles %}
+        <div class="card">
+          <div class="card-header">
+            <img class="img" src="/static/{{ r.icon }}" alt="{{ r.name }}">
+            <div>
+              <div class="name">{{ r.name }}</div>
+              <div class="camp
+                {% if r.camp == 'le Village' %}camp-village{% elif r.camp == 'les Démons' %}camp-demons{% endif %}">
+                {{ r.camp }}
+              </div>
+            </div>
+          </div>
+          <div class="desc">{{ r.description }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+</body>
+</html>

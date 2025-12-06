@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Votre rôle</title>
+  <style>
+    body{
+      margin:0;padding:0;
+      background:url('/static/fond.png') center/cover no-repeat;
+      font-family:Arial,sans-serif;color:#fff;
+      min-height:100vh;display:flex;align-items:center;justify-content:center;
+    }
+    .box{
+      background:rgba(0,0,0,0.75);
+      padding:30px 40px;border-radius:14px;
+      text-align:center;max-width:480px;
+    }
+    .img{
+      width:120px;height:120px;border-radius:50%;object-fit:cover;margin-bottom:12px;
+    }
+    h1{margin:0 0 10px 0}
+    p{margin:6px 0}
+    a.btn{
+      display:inline-block;margin-top:14px;padding:8px 14px;
+      border-radius:999px;border:1px solid rgba(255,255,255,0.6);
+      text-decoration:none;color:#fff;font-size:13px;
+      background:rgba(0,0,0,0.3);
+    }
+
+    .camp-village { color: #4caf50; }
+    .camp-demons { color: #e53935; }
+
+    .roles-link{
+      position:fixed;
+      top:12px;
+      left:12px;
+      background:rgba(0,0,0,0.7);
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:13px;
+      text-decoration:none;
+      color:#fff;
+      border:1px solid rgba(255,255,255,0.4);
+      z-index:1000;
+    }
+
+    .lover-border{
+      box-shadow:0 0 12px #ff70d7;
+      border:3px solid #ff70d7;
+    }
+
+    .btn-necro{
+      display:inline-block;
+      margin-top:10px;
+      padding:6px 12px;
+      border-radius:999px;
+      border:1px solid #ff70d7;
+      color:#ff70d7;
+      text-decoration:none;
+      font-size:13px;
+      background:rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <a class="roles-link" href="{{ url_for('roles_list') }}">? Rôles</a>
+
+  <!-- Métadonnées pour le script JS (pas de Jinja dans le JS) -->
+  <div id="role-meta"
+       data-votant="{{ votant }}"
+       data-initial-admin-started="{% if admin_started %}1{% else %}0{% endif %}">
+  </div>
+
+  <div class="box">
+    <h1>Votre rôle</h1>
+
+    <img
+      class="img {% if lover_partner %}lover-border{% endif %}"
+      src="/static/{{ role.icon }}"
+      alt="Votre rôle"
+    >
+
+    <p>Vous êtes : <strong>{{ role.name }}</strong></p>
+
+    {% if lover_partner %}
+      <p style="margin-top:4px;color:#ff70d7;font-weight:bold;">
+        Vous êtes amoureux de <strong>Joueur {{ lover_partner }}</strong>.
+      </p>
+    {% endif %}
+
+    <p>Gardez votre rôle secret, ne montrez pas cet écran aux autres joueurs.</p>
+
+    <p>Vous devez gagner avec
+      {% if role.camp == "le Village" %}
+        <strong class="camp-village">{{ role.camp }}</strong>
+      {% elif role.camp == "les Démons" %}
+        <strong class="camp-demons">{{ role.camp }}</strong>
+      {% else %}
+        <strong>{{ role.camp }}</strong>
+      {% endif %}
+    </p>
+
+    <p><strong>Description :</strong> {{ role.description }}</p>
+
+    {% if role.name == "Nécromancien" %}
+      <a class="btn-necro" href="{{ url_for('necro_chat', joueur=votant) }}">
+        Voir les messages des morts
+      </a>
+    {% endif %}
+
+    <br>
+    <a class="btn" href="{{ url_for('vote_page', votant=votant) }}">Retour à la partie</a>
+  </div>
+
+  <script>
+    (function () {
+      const interval = 1500;
+
+      const metaEl = document.getElementById('role-meta');
+      const votant = metaEl.dataset.votant;
+      const initialAdminStarted = parseInt(metaEl.dataset.initialAdminStarted, 10); // 0 ou 1
+
+      function pollStatus() {
+        fetch('/api/status?votant=' + encodeURIComponent(votant))
+          .then(r => r.json())
+          .then(data => {
+
+            // Joueur éliminé
+            if (data.eliminated) {
+              window.location.href = "{{ url_for('vote_page', votant='__V__') }}".replace('__V__', votant);
+              return;
+            }
+
+            // Résultats révélés
+            if (data.reveal) {
+              window.location.href = "{{ url_for('vote_page', votant='__V__') }}".replace('__V__', votant);
+              return;
+            }
+
+            // Début du vote OU nouvelle partie (changement de admin_started)
+            const currentAdminStarted = data.admin_started ? 1 : 0;
+            if (currentAdminStarted !== initialAdminStarted) {
+              window.location.href = "{{ url_for('vote_page', votant='__V__') }}".replace('__V__', votant);
+              return;
+            }
+
+            setTimeout(pollStatus, interval);
+          })
+          .catch(() => {
+            setTimeout(pollStatus, interval);
+          });
+      }
+
+      pollStatus();
+    })();
+  </script>
+
+</body>
+</html>

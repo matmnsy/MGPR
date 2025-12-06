@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Esprit farceur — échange de rôles</title>
+  <style>
+    body{
+      margin:0;
+      font-family:Arial,sans-serif;
+      background:#111 url('/static/fond.png') center/cover no-repeat;
+      color:#fff;
+      padding:20px;
+    }
+    .wrap{max-width:900px;margin:0 auto;}
+    h1{margin-top:0;margin-bottom:10px;}
+    .info{font-size:14px;color:#ddd;margin-bottom:16px;}
+    .msg{margin-bottom:10px;padding:8px 10px;border-radius:6px;font-size:14px;}
+    .msg.ok{background:rgba(80,160,80,0.4);}
+    .msg.err{background:rgba(200,80,80,0.5);}
+    form{background:rgba(0,0,0,0.6);padding:16px;border-radius:10px;margin-bottom:20px;}
+    label{display:block;margin-bottom:6px;font-size:14px;}
+    select{width:100%;padding:6px;border-radius:6px;border:1px solid #444;background:#222;color:#fff;margin-bottom:12px;}
+    button{padding:8px 14px;border-radius:8px;border:none;background:#2aa;color:#fff;font-weight:600;cursor:pointer;}
+    a.btn-back{display:inline-block;margin-top:10px;font-size:13px;color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,0.4);padding:6px 10px;border-radius:999px;}
+    table{width:100%;border-collapse:collapse;margin-top:16px;background:rgba(0,0,0,0.6);border-radius:10px;overflow:hidden;}
+    th,td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.06);text-align:left;font-size:14px;}
+    .role{font-size:13px;color:#ccc;}
+    .img{width:36px;height:36px;border-radius:50%;object-fit:cover;margin-right:8px;vertical-align:middle;}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Esprit farceur — échange de rôles</h1>
+    <div class="info">
+      Choisissez deux joueurs : leurs rôles seront échangés immédiatement.
+      Cette action impacte toutes les interfaces (admin et joueurs).
+    </div>
+
+    {% if message %}
+      <div class="msg ok">{{ message }}</div>
+    {% endif %}
+    {% if error %}
+      <div class="msg err">{{ error }}</div>
+    {% endif %}
+
+    <form method="post">
+      <label for="joueur1">Premier joueur</label>
+      <select name="joueur1" id="joueur1" required>
+        <option value="">-- choisir --</option>
+        {% for j in joueurs %}
+          <option value="{{ j }}">Joueur {{ j }} — {{ roles[j]['name'] }}</option>
+        {% endfor %}
+      </select>
+
+      <label for="joueur2">Deuxième joueur</label>
+      <select name="joueur2" id="joueur2" required>
+        <option value="">-- choisir --</option>
+        {% for j in joueurs %}
+          <option value="{{ j }}">Joueur {{ j }} — {{ roles[j]['name'] }}</option>
+        {% endfor %}
+      </select>
+
+      <button type="submit">Échanger les rôles</button>
+      <a class="btn-back" href="{{ url_for('admin_dashboard') }}">Retour au dashboard</a>
+    </form>
+
+    <h2>Récapitulatif des rôles actuels</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Joueur</th>
+          <th>Rôle</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for j in joueurs %}
+          <tr>
+            <td>Joueur {{ j }}</td>
+            <td>
+              <img class="img" src="/static/{{ roles[j]['icon'] }}" alt="{{ roles[j]['name'] }}">
+              <span class="role">{{ roles[j]['name'] }}</span>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

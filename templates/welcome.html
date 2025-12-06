@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Bienvenue</title>
+  <style>
+    body{
+      margin:0;
+      padding:0;
+      background:url('/static/fond.png') center/cover no-repeat;
+      font-family:Arial;color:#fff;
+      display:flex;align-items:center;justify-content:center;min-height:100vh
+    }
+    .box{
+      background:rgba(0,0,0,0.6);
+      padding:30px;
+      border-radius:12px;
+      text-align:center;
+    }
+    h1{margin:0 0 8px 0}
+    .btn-role{
+      display:inline-block;
+      margin-top:12px;
+      border:1px solid rgba(255,255,255,0.6);
+      border-radius:999px;
+      padding:6px 12px;
+      font-size:13px;
+      text-decoration:none;
+      color:#fff;
+    }
+    .roles-link{
+      position:fixed;
+      top:12px;
+      left:12px;
+      background:rgba(0,0,0,0.7);
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:13px;
+      text-decoration:none;
+      color:#fff;
+      border:1px solid rgba(255,255,255,0.4);
+      z-index:1000;
+    }
+  </style>
+</head>
+<body>
+
+  <a class="roles-link" href="{{ url_for('roles_list') }}">? Rôles</a>
+
+  <div class="box">
+    <h1>Bienvenue dans le jeu du Loup Garou</h1>
+    <p>Attendez que le maître du jeu lance la phase de vote.</p>
+    <a class="btn-role" href="{{ url_for('view_role', votant=votant) }}">Voir mon rôle</a>
+  </div>
+
+<script>
+(function pollStatus(){
+  const interval = 1500;
+  fetch('/api/status?votant={{ votant }}')
+    .then(r => r.json())
+    .then(data => {
+      if (data.eliminated) {
+        window.location.href = window.location.pathname;
+        return;
+      }
+
+      if (data.admin_started) {
+        window.location.href = window.location.pathname;
+        return;
+      }
+
+      setTimeout(pollStatus, interval);
+    })
+    .catch(err => {
+      setTimeout(pollStatus, interval);
+    });
+})();
+</script>
+</body>
+</html>

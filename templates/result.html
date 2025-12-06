@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Résultats</title>
+    <style>
+        body {
+            margin:0;
+            padding:0;
+            background-image: url('/static/fond.png');
+            background-size:cover;
+            background-position:center;
+            font-family: Arial, sans-serif;
+            color:#fff;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            min-height:100vh;
+            text-align:center;
+        }
+        .result {
+            background: rgba(0,0,0,0.7);
+            padding: 30px 50px;
+            border-radius: 15px;
+            font-size: 22px;
+        }
+        .winner {
+            font-size: 28px;
+            font-weight:bold;
+            margin-top: 20px;
+            color: #ff3333;
+        }
+    </style>
+</head>
+<body>
+    <div class="result">
+        <h2>Votes par joueur :</h2>
+        <ul>
+            {% for joueur, nb in votes.items() %}
+                <li>Joueur {{ joueur }} : {{ nb }} vote(s)</li>
+            {% endfor %}
+        </ul>
+        <div class="winner">
+            Joueur éliminé : 
+            {% for j in joueurs_elimines %}
+                {{ j }}{% if not loop.last %}, {% endif %}
+            {% endfor %}
+            ({{ max_votes }} votes)
+            
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Résultats</title>
+  <style>
+    body{
+      margin:0;padding:0;
+      background:url('/static/fond.png') center/cover no-repeat;
+      font-family:Arial,sans-serif;color:#fff;
+      display:flex;align-items:center;justify-content:center;
+      min-height:100vh;
+    }
+    .box{
+      background:rgba(0,0,0,0.75);
+      padding:24px;
+      border-radius:12px;
+      max-width:720px;
+      text-align:center;
+    }
+    .elim-title{
+      color:#ff6666;
+      font-weight:800;
+      font-size:26px;
+      margin-bottom:12px;
+    }
+    .elim-list{
+      display:flex;
+      justify-content:center;
+      gap:16px;
+      flex-wrap:wrap;
+      margin-bottom:16px;
+    }
+    .elim-card{
+      background:rgba(0,0,0,0.5);
+      border-radius:10px;
+      padding:10px 14px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      min-width:140px;
+    }
+    .elim-img{
+      width:72px;
+      height:72px;
+      border-radius:8px;
+      object-fit:cover;
+      margin-bottom:6px;
+    }
+    .lover-note{
+      margin-top:4px;
+      font-size:12px;
+      color:#ff77d9;
+      font-weight:bold;
+    }
+
+    table{
+      width:100%;
+      margin-top:12px;
+      border-collapse:collapse;
+    }
+    th,td{
+      padding:8px;
+      border-bottom:1px solid rgba(255,255,255,0.06);
+      text-align:left;
+    }
+
+    .lover-title{
+      margin-top:10px;
+      margin-bottom:6px;
+      font-weight:bold;
+      color:#ff77d9;
+      font-size:18px;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <div class="elim-title">Joueur(s) éliminé(s) — {{ max_votes }} vote(s)</div>
+
+    <div class="elim-list">
+      {% for w in winners %}
+        {% set partner = lover_map.get(w) if lover_map is defined else None %}
+        <div class="elim-card">
+          <img class="elim-img" src="/static/{{ roles[w]['icon'] }}" alt="{{ roles[w]['name'] }}">
+          <div><strong>Joueur {{ w }}</strong></div>
+          <div style="font-size:13px;color:#ddd">{{ roles[w]['name'] }}</div>
+
+          {% if partner %}
+            <div class="lover-note">
+              Amoureux de Joueur {{ partner }}
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+
+    {% if reveal_couple and couple_players and couple_players|length == 2 %}
+      <div class="lover-title">Couple maudit révélé</div>
+      <div class="elim-list">
+        {% for j in couple_players %}
+          {% set partner = lover_map.get(j) if lover_map is defined else None %}
+          <div class="elim-card">
+            <img class="elim-img" src="/static/{{ roles[j]['icon'] }}" alt="{{ roles[j]['name'] }}">
+            <div><strong>Joueur {{ j }}</strong></div>
+            <div style="font-size:13px;color:#ddd">{{ roles[j]['name'] }}</div>
+            {% if partner %}
+              <div class="lover-note">
+                Amoureux de Joueur {{ partner }}
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <h3>Décompte détaillé</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Joueur</th>
+          <th>Joueur voté</th>
+          <th>Votes reçus</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for j, n in votes.items() %}
+          <tr>
+            <td>Joueur {{ j }}</td>
+            <td>
+              {% if j in joueur_vote_pour %}
+                Joueur {{ joueur_vote_pour[j] }}
+              {% else %}
+                —
+              {% endif %}
+            </td>
+            <td>{{ n }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+<script>
+(function pollStatus(){
+  const interval = 1500;
+  fetch('/api/status?votant={{ votant }}')
+    .then(r => r.json())
+    .then(data => {
+      if (data.eliminated) {
+        window.location.href = window.location.pathname; // /vote/<votant> -> eliminated.html
+        return;
+      }
+
+      // Si l'admin passe à la prochaine nuit ou nouvelle partie
+      if (!data.reveal) {
+        window.location.href = window.location.pathname; // /vote/<votant> -> welcome/eliminated
+        return;
+      }
+
+      setTimeout(pollStatus, interval);
+    })
+    .catch(err => {
+      setTimeout(pollStatus, interval);
+    });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Choisir le couple — Admin</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #111 url('/static/fond.png') center/cover no-repeat;
+      font-family: Arial, sans-serif;
+      color: #fff;
+    }
+
+    .wrap {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+      font-size: 24px;
+      text-align: center;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 14px;
+      opacity: 0.8;
+      margin-bottom: 20px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      justify-items: center;
+      margin-top: 20px;
+    }
+
+    .player-card {
+      width: 140px;
+      background: rgba(0,0,0,0.6);
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+      transition: 0.2s;
+      border: 2px solid transparent;
+    }
+
+    .player-card.selected {
+      border-color: #ff70d7; /* rose */
+      box-shadow: 0 0 12px #ff70d7;
+    }
+
+    .player-card img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 8px;
+    }
+
+    .submit-box {
+      margin-top: 26px;
+      text-align: center;
+    }
+
+    button {
+      padding: 10px 20px;
+      background: #ff70d7;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    a.back-btn {
+      display: inline-block;
+      margin-top: 12px;
+      color: #ccc;
+      font-size: 13px;
+      text-decoration: none;
+    }
+
+    input[type="checkbox"] {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <h1>Choisir le couple</h1>
+  <div class="subtitle">
+    Sélectionnez exactement deux joueurs. Ils deviendront <strong>amoureux</strong>.
+  </div>
+
+  <form method="POST">
+
+    <div class="grid">
+
+      {% for j in joueurs %}
+      <label class="player-card {% if j in couple_players %}selected{% endif %}">
+        <input
+          type="checkbox"
+          name="couple"
+          value="{{ j }}"
+          {% if j in couple_players %}checked{% endif %}
+          onchange="updateSelection(this)"
+        >
+        <img src="/static/{{ roles[j]['icon'] }}" alt="Joueur {{ j }}">
+        <div>Joueur {{ j }}</div>
+      </label>
+      {% endfor %}
+
+    </div>
+
+    <div class="submit-box">
+      <button type="submit">Valider le couple</button>
+      <br>
+      <a class="back-btn" href="{{ url_for('admin_dashboard') }}">Retour au dashboard</a>
+    </div>
+
+  </form>
+
+</div>
+
+<script>
+function updateSelection(checkbox) {
+  const checkboxes = document.querySelectorAll('input[name="couple"]');
+  const selected = Array.from(checkboxes).filter(c => c.checked);
+
+  // Max 2 sélectionnés
+  if (selected.length > 2) {
+    checkbox.checked = false;
+    return;
+  }
+
+  // Mettre à jour le style rose
+  document.querySelectorAll('.player-card').forEach(card => {
+    const input = card.querySelector('input');
+    if (input.checked) card.classList.add('selected');
+    else card.classList.remove('selected');
+  });
+}
+</script>
+
+</body>
+</html>

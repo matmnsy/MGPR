@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Erreur – Joueur éliminé</title>
+  <style>
+    body{
+      margin:0;
+      padding:0;
+      background:url('/static/fond.png') center/cover no-repeat;
+      font-family:Arial,sans-serif;
+      color:#fff;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .box{
+      background:rgba(0,0,0,0.8);
+      padding:30px 40px;
+      border-radius:12px;
+      text-align:center;
+      max-width:480px;
+      border:1px solid #ff5555;
+    }
+    h1{
+      margin-top:0;
+      margin-bottom:10px;
+      font-size:24px;
+      color:#ff5555;
+    }
+    p{
+      margin:8px 0;
+    }
+    .code{
+      margin-top:10px;
+      font-size:13px;
+      opacity:0.8;
+    }
+    .btn{
+      display:inline-block;
+      margin-top:16px;
+      padding:8px 14px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,0.7);
+      background:rgba(0,0,0,0.4);
+      color:#fff;
+      font-size:13px;
+      text-decoration:none;
+    }
+    .info{
+      margin-top:10px;
+      font-size:13px;
+      color:#ccc;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>Erreur</h1>
+    <p>Joueur {{ votant }}, vous avez été éliminé.</p>
+    <p>Vous n’avez plus accès à la phase de vote pour ce tour.</p>
+
+    {% if not already_sent %}
+      <a class="btn" href="{{ url_for('dead_message', joueur=votant) }}">
+        Écrire une dernière volonté
+      </a>
+      <div class="info">
+        Vous ne pourrez l’écrire qu’une seule fois pour toute la partie.
+      </div>
+    {% else %}
+      <div class="info">
+        Vous avez déjà écrit votre dernière volonté.
+      </div>
+    {% endif %}
+
+    <p class="code">Code d’erreur : ELIMINATED_403</p>
+  </div>
+
+<script>
+(function pollStatus(){
+  const interval = 1500;
+
+  fetch('/api/status?votant={{ votant }}')
+    .then(r => r.json())
+    .then(data => {
+
+      // Nouvelle partie : l'admin a tout reset, vous n'êtes plus éliminé
+      if (!data.eliminated && !data.reveal && !data.admin_started) {
+        window.location.href = "{{ url_for('vote_page', votant=votant) }}";
+        return;
+      }
+
+      // Si pour une raison quelconque vous redevenez actif en cours de tour
+      if (!data.eliminated) {
+        window.location.href = "{{ url_for('vote_page', votant=votant) }}";
+        return;
+      }
+
+      setTimeout(pollStatus, interval);
+    })
+    .catch(err => {
+      setTimeout(pollStatus, interval);
+    });
+})();
+</script>
+</body>
+</html>

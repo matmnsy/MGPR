@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>En attente</title>
+  <style>
+    body{
+      margin:0;padding:0;
+      background:url('/static/fond.png') center/cover no-repeat;
+      font-family:Arial;color:#fff;
+      display:flex;align-items:center;justify-content:center;min-height:100vh
+    }
+    .box{
+      background:rgba(0,0,0,0.7);
+      padding:30px;
+      border-radius:12px;
+      text-align:center;
+      max-width:480px
+    }
+    .role{
+      margin-top:16px;
+      padding:10px 14px;
+      border-radius:10px;
+      background:rgba(255,255,255,0.08);
+      font-size:15px
+    }
+    .role span{font-weight:bold}
+    .roles-link{
+      position:fixed;
+      top:12px;
+      left:12px;
+      background:rgba(0,0,0,0.7);
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:13px;
+      text-decoration:none;
+      color:#fff;
+      border:1px solid rgba(255,255,255,0.4);
+      z-index:1000;
+    }
+  </style>
+</head>
+<body>
+
+  <a class="roles-link" href="{{ url_for('roles_list') }}">? Rôles</a>
+
+  <div class="box" id="box">
+    <div>Vote enregistré. En attente de l'annonce du maître du jeu...</div>
+    <div style="margin-top:12px;font-size:13px;color:#ccc" id="info">Vérification du statut...</div>
+
+    {% if role %}
+      <div class="role">
+        Votre rôle pour cette partie est :<br>
+        <span>{{ role }}</span>
+      </div>
+    {% endif %}
+  </div>
+
+<script>
+(function pollStatus(){
+  const interval = 1500;
+  fetch('/api/status?votant={{ votant }}')
+    .then(r => r.json())
+    .then(data => {
+      const info = document.getElementById('info');
+
+      // Joueur éliminé pendant l'attente
+      if (data.eliminated) {
+        window.location.href = window.location.pathname; // /vote/<votant> -> eliminated.html
+        return;
+      }
+
+      // Admin a révélé les votes
+      if (data.reveal) {
+        window.location.href = window.location.pathname; // /vote/<votant> -> public_result
+        return;
+      }
+
+      // Admin fait "Prochaine nuit" ou "Nouvelle partie" (admin_started false, reveal false)
+      if (!data.admin_started && !data.reveal) {
+        window.location.href = window.location.pathname; // /vote/<votant> -> welcome (ou eliminated)
+        return;
+      }
+
+      if (data.all_voted) {
+        info.textContent = 'Tous les joueurs ont voté — en attente de la révélation de l\'admin...';
+      } else {
+        info.textContent = 'En attente des autres joueurs...';
+      }
+      setTimeout(pollStatus, interval);
+    })
+    .catch(err => {
+      setTimeout(pollStatus, interval);
+    });
+})();
+</script>
+</body>
+</html>

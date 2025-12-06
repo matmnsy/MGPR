@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Admin login</title>
+  <style>
+    body{font-family:Arial;background:#222;color:#fff;display:flex;align-items:center;justify-content:center;height:100vh;margin:0}
+    .box{background:#111;padding:24px;border-radius:10px;min-width:320px}
+    input{width:100%;padding:8px;margin-top:8px;border-radius:6px;border:1px solid #444}
+    button{margin-top:12px;padding:8px 12px;border-radius:6px;background:#2a9; color:#fff;border:none;cursor:pointer}
+    .error{color:#f66;margin-top:8px}
+    a{color:#2a9}
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Connexion administrateur</h2>
+    <form method="post">
+      <label>Mot de passe</label>
+      <input type="password" name="password" required />
+      <button type="submit">Se connecter</button>
+    </form>
+    {% if error %}
+      <div class="error">{{ error }}</div>
+    {% endif %}
+    <p style="margin-top:8px;font-size:13px;color:#aaa">
+      Retour <a href="{{ url_for('select_player') }}">page joueurs</a>
+    </p>
+  </div>
+</body>
+</html>

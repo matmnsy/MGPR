@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Message de mort</title>
+  <style>
+    body{
+      margin:0;
+      padding:20px;
+      background:#111 url('/static/fond.png') center/cover no-repeat;
+      font-family:Arial,sans-serif;
+      color:#fff;
+    }
+    .wrap{
+      max-width:700px;
+      margin:0 auto;
+      background:rgba(0,0,0,0.8);
+      padding:20px;
+      border-radius:14px;
+    }
+    h1{
+      margin:0 0 8px 0;
+      font-size:22px;
+    }
+    .subtitle{
+      font-size:13px;
+      color:#ccc;
+      margin-bottom:10px;
+    }
+    textarea{
+      width:100%;
+      min-height:120px;
+      border-radius:8px;
+      border:none;
+      padding:8px;
+      resize:vertical;
+      font-family:inherit;
+      font-size:14px;
+    }
+    button{
+      margin-top:8px;
+      padding:6px 12px;
+      border-radius:999px;
+      border:none;
+      background:#ff77d9;
+      color:#fff;
+      font-weight:bold;
+      cursor:pointer;
+      font-size:13px;
+    }
+    .info{
+      font-size:12px;
+      color:#ccc;
+      margin-top:4px;
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Message de mort</h1>
+  <div class="subtitle">
+    Joueur {{ joueur }} — vous pouvez envoyer une dernière volonté qui sera montrée (ou non) au Nécromancien par le maître du jeu.
+  </div>
+
+  {% if already_sent %}
+    <div class="info">
+      Vous avez déjà envoyé votre message. Retournez à l’écran d’élimination.
+    </div>
+  {% else %}
+    <form method="post">
+      <textarea name="message" placeholder="Ex : 'Je pense que le joueur 3 est démon...'"></textarea>
+      <button type="submit">Envoyer</button>
+      <div class="info">
+        Une fois envoyée, votre dernière volonté ne pourra plus être modifiée. Vous serez ensuite renvoyé vers l'écran d'élimination.
+      </div>
+    </form>
+  {% endif %}
+</div>
+</body>
+</html>

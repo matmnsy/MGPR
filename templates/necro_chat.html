@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Messages des morts</title>
+  <style>
+    body{
+      margin:0;
+      padding:20px;
+      background:#111 url('/static/fond.png') center/cover no-repeat;
+      font-family:Arial,sans-serif;
+      color:#fff;
+    }
+    .wrap{
+      max-width:900px;
+      margin:0 auto;
+      background:rgba(0,0,0,0.8);
+      padding:20px;
+      border-radius:14px;
+    }
+    h1{
+      margin:0 0 6px 0;
+      font-size:22px;
+    }
+    .subtitle{
+      font-size:13px;
+      color:#ccc;
+      margin-bottom:10px;
+    }
+    .msg{
+      margin-bottom:8px;
+      padding:8px 10px;
+      border-radius:10px;
+      background:rgba(0,0,0,0.5);
+    }
+    .author{
+      font-weight:bold;
+    }
+    .back{
+      margin-top:12px;
+      font-size:13px;
+    }
+    .back a{
+      color:#fff;
+      text-decoration:none;
+      border-bottom:1px solid rgba(255,255,255,0.6);
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Messages des morts</h1>
+  <div class="subtitle">
+    Joueur {{ joueur }} — vous êtes le Nécromancien. Voici les messages que le maître du jeu a décidé de vous révéler.
+  </div>
+
+  {% if messages %}
+    {% for m in messages %}
+      <div class="msg">
+        <div class="author">Joueur {{ m["author"] }} :</div>
+        <div>{{ m["text"] }}</div>
+      </div>
+    {% endfor %}
+  {% else %}
+    <div style="font-size:13px;color:#ccc;">Aucun message ne vous a été révélé pour le moment.</div>
+  {% endif %}
+
+  <div class="back">
+    <a href="{{ url_for('vote_page', votant=joueur) }}">Retour à la partie</a>
+  </div>
+</div>
+</body>
+</html>
