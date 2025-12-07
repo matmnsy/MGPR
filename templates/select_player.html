@@ -3,43 +3,70 @@
 <head>
   <meta charset="utf-8">
   <title>Choisir un joueur</title>
+
+  <!-- IMPORTANT pour le mobile -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <style>
-    body{
-      margin:0;
-      padding:20px;
-      background:#333 url('/static/fond.png') center/cover no-repeat;
-      font-family:Arial;color:#fff;
-      min-height:100vh
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #333 url("{{ url_for('static', filename='fond.png') }}") center/cover no-repeat;
+      font-family: Arial, sans-serif;
+      color: #fff;
+      min-height: 100vh;
     }
-    .grid{
-      display:grid;
-      grid-template-columns:repeat(4,150px);
-      gap:20px;
-      justify-content:center
+
+    .grid {
+      display: grid;
+      /* au lieu de 4 colonnes fixes : colonnes auto selon la largeur */
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 20px;
+      justify-content: center;
     }
-    .btn{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      height:100px;
-      background:rgba(0,0,0,0.6);
-      border-radius:10px;
-      color:#fff;
-      text-decoration:none;
-      font-weight:bold
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100px;
+      background: rgba(0,0,0,0.6);
+      border-radius: 10px;
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      text-align: center;
     }
-    .roles-link{
-      position:fixed;
-      top:12px;
-      left:12px;
-      background:rgba(0,0,0,0.7);
-      padding:6px 10px;
-      border-radius:999px;
-      font-size:13px;
-      text-decoration:none;
-      color:#fff;
-      border:1px solid rgba(255,255,255,0.4);
-      z-index:1000;
+
+    .roles-link {
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      background: rgba(0,0,0,0.7);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+      text-decoration: none;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.4);
+      z-index: 1000;
+    }
+
+    /* Ajustements spécifiques pour petits écrans */
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+
+      .btn {
+        height: 80px;
+        font-size: 14px;
+      }
+
+      .roles-link {
+        font-size: 11px;
+        padding: 4px 8px;
+      }
     }
   </style>
 </head>
