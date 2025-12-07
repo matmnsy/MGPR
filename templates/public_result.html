@@ -1,79 +1,128 @@
 <!doctype html>
 <html lang="fr">
-<head>
-  <meta charset="utf-8">
-  <title>Résultats</title>
-  <style>
-    body{
-      margin:0;padding:0;
-      background:url('/static/fond.png') center/cover no-repeat;
-      font-family:Arial,sans-serif;color:#fff;
-      display:flex;align-items:center;justify-content:center;
-      min-height:100vh;
-    }
-    .box{
-      background:rgba(0,0,0,0.75);
-      padding:24px;
-      border-radius:12px;
-      max-width:720px;
-      text-align:center;
-    }
-    .elim-title{
-      color:#ff6666;
-      font-weight:800;
-      font-size:26px;
-      margin-bottom:12px;
-    }
-    .elim-list{
-      display:flex;
-      justify-content:center;
-      gap:16px;
-      flex-wrap:wrap;
-      margin-bottom:16px;
-    }
-    .elim-card{
-      background:rgba(0,0,0,0.5);
-      border-radius:10px;
-      padding:10px 14px;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      min-width:140px;
-    }
-    .elim-img{
-      width:72px;
-      height:72px;
-      border-radius:8px;
-      object-fit:cover;
-      margin-bottom:6px;
-    }
-    .lover-note{
-      margin-top:4px;
-      font-size:12px;
-      color:#ff77d9;
-      font-weight:bold;
-    }
-
-    table{
-      width:100%;
-      margin-top:12px;
-      border-collapse:collapse;
-    }
-    th,td{
-      padding:8px;
-      border-bottom:1px solid rgba(255,255,255,0.06);
-      text-align:left;
-    }
-
-    .lover-title{
-      margin-top:10px;
-      margin-bottom:6px;
-      font-weight:bold;
-      color:#ff77d9;
-      font-size:18px;
-    }
-  </style>
-</head>
+  <head>
+    <meta charset="utf-8">
+    <title>Résultats</title>
+  
+    <!-- responsive mobile -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background: url("{{ url_for('static', filename='fond.png') }}") center/cover no-repeat;
+        font-family: Arial, sans-serif;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        box-sizing: border-box;
+      }
+  
+      .box {
+        background: rgba(0,0,0,0.75);
+        padding: 24px;
+        border-radius: 12px;
+        max-width: 720px;
+        width: 95vw;             /* ne dépasse pas l'écran */
+        text-align: center;
+        box-sizing: border-box;
+      }
+  
+      .elim-title {
+        color: #ff6666;
+        font-weight: 800;
+        font-size: 26px;
+        margin-bottom: 12px;
+      }
+  
+      .elim-list {
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+      }
+  
+      .elim-card {
+        background: rgba(0,0,0,0.5);
+        border-radius: 10px;
+        padding: 10px 14px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 140px;
+        box-sizing: border-box;
+      }
+  
+      .elim-img {
+        width: 72px;
+        height: 72px;
+        border-radius: 8px;
+        object-fit: cover;
+        margin-bottom: 6px;
+      }
+  
+      .lover-note {
+        margin-top: 4px;
+        font-size: 12px;
+        color: #ff77d9;
+        font-weight: bold;
+      }
+  
+      table {
+        width: 100%;
+        margin-top: 12px;
+        border-collapse: collapse;
+        font-size: 14px;
+      }
+  
+      th, td {
+        padding: 8px;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        text-align: left;
+      }
+  
+      .lover-title {
+        margin-top: 10px;
+        margin-bottom: 6px;
+        font-weight: bold;
+        color: #ff77d9;
+        font-size: 18px;
+      }
+  
+      /* Adaptation petits écrans */
+      @media (max-width: 600px) {
+        .box {
+          padding: 18px 12px;
+        }
+  
+        .elim-title {
+          font-size: 22px;
+        }
+  
+        .elim-card {
+          min-width: 120px;
+          padding: 8px 10px;
+        }
+  
+        .elim-img {
+          width: 64px;
+          height: 64px;
+        }
+  
+        table {
+          font-size: 12px;
+        }
+  
+        th, td {
+          padding: 6px;
+        }
+      }
+    </style>
+  </head>  
 <body>
   <div class="box">
     <div class="elim-title">Joueur(s) éliminé(s) — {{ max_votes }} vote(s)</div>

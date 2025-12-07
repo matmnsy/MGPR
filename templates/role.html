@@ -1,67 +1,132 @@
 <!doctype html>
 <html lang="fr">
-<head>
-  <meta charset="utf-8">
-  <title>Votre rôle</title>
-  <style>
-    body{
-      margin:0;padding:0;
-      background:url('/static/fond.png') center/cover no-repeat;
-      font-family:Arial,sans-serif;color:#fff;
-      min-height:100vh;display:flex;align-items:center;justify-content:center;
-    }
-    .box{
-      background:rgba(0,0,0,0.75);
-      padding:30px 40px;border-radius:14px;
-      text-align:center;max-width:480px;
-    }
-    .img{
-      width:120px;height:120px;border-radius:50%;object-fit:cover;margin-bottom:12px;
-    }
-    h1{margin:0 0 10px 0}
-    p{margin:6px 0}
-    a.btn{
-      display:inline-block;margin-top:14px;padding:8px 14px;
-      border-radius:999px;border:1px solid rgba(255,255,255,0.6);
-      text-decoration:none;color:#fff;font-size:13px;
-      background:rgba(0,0,0,0.3);
-    }
-
-    .camp-village { color: #4caf50; }
-    .camp-demons { color: #e53935; }
-
-    .roles-link{
-      position:fixed;
-      top:12px;
-      left:12px;
-      background:rgba(0,0,0,0.7);
-      padding:6px 10px;
-      border-radius:999px;
-      font-size:13px;
-      text-decoration:none;
-      color:#fff;
-      border:1px solid rgba(255,255,255,0.4);
-      z-index:1000;
-    }
-
-    .lover-border{
-      box-shadow:0 0 12px #ff70d7;
-      border:3px solid #ff70d7;
-    }
-
-    .btn-necro{
-      display:inline-block;
-      margin-top:10px;
-      padding:6px 12px;
-      border-radius:999px;
-      border:1px solid #ff70d7;
-      color:#ff70d7;
-      text-decoration:none;
-      font-size:13px;
-      background:rgba(0,0,0,0.2);
-    }
-  </style>
-</head>
+  <head>
+    <meta charset="utf-8">
+    <title>Votre rôle</title>
+  
+    <!-- Responsive mobile -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background: url("{{ url_for('static', filename='fond.png') }}") center/cover no-repeat;
+        font-family: Arial, sans-serif;
+        color: #fff;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+      }
+  
+      .box {
+        background: rgba(0,0,0,0.75);
+        padding: 30px 40px;
+        border-radius: 14px;
+        text-align: center;
+        max-width: 480px;
+        width: 90vw;              /* s’adapte à la largeur de l’écran */
+        box-sizing: border-box;
+      }
+  
+      .img {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 12px;
+      }
+  
+      h1 {
+        margin: 0 0 10px 0;
+        font-size: 1.8rem;
+      }
+  
+      p {
+        margin: 6px 0;
+      }
+  
+      a.btn {
+        display: inline-block;
+        margin-top: 14px;
+        padding: 8px 14px;
+        border-radius: 999px;
+        border: 1px solid rgba(255,255,255,0.6);
+        text-decoration: none;
+        color: #fff;
+        font-size: 13px;
+        background: rgba(0,0,0,0.3);
+        white-space: nowrap;
+      }
+  
+      .camp-village { color: #4caf50; }
+      .camp-demons { color: #e53935; }
+  
+      .roles-link {
+        position: fixed;
+        top: 12px;
+        left: 12px;
+        background: rgba(0,0,0,0.7);
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 13px;
+        text-decoration: none;
+        color: #fff;
+        border: 1px solid rgba(255,255,255,0.4);
+        z-index: 1000;
+      }
+  
+      .lover-border {
+        box-shadow: 0 0 12px #ff70d7;
+        border: 3px solid #ff70d7;
+      }
+  
+      .btn-necro {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        border: 1px solid #ff70d7;
+        color: #ff70d7;
+        text-decoration: none;
+        font-size: 13px;
+        background: rgba(0,0,0,0.2);
+        white-space: nowrap;
+      }
+  
+      /* Adaptation petits écrans */
+      @media (max-width: 600px) {
+        .box {
+          padding: 22px 18px;
+        }
+  
+        .img {
+          width: 96px;
+          height: 96px;
+        }
+  
+        h1 {
+          font-size: 1.5rem;
+        }
+  
+        a.btn,
+        .btn-necro {
+          display: block;
+          width: 100%;
+          max-width: 260px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+  
+        .roles-link {
+          font-size: 11px;
+          padding: 4px 8px;
+        }
+      }
+    </style>
+  </head>  
 <body>
 
   <a class="roles-link" href="{{ url_for('roles_list') }}">? Rôles</a>

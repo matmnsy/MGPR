@@ -1,45 +1,79 @@
 <!doctype html>
 <html lang="fr">
-<head>
-  <meta charset="utf-8">
-  <title>En attente</title>
-  <style>
-    body{
-      margin:0;padding:0;
-      background:url('/static/fond.png') center/cover no-repeat;
-      font-family:Arial;color:#fff;
-      display:flex;align-items:center;justify-content:center;min-height:100vh
-    }
-    .box{
-      background:rgba(0,0,0,0.7);
-      padding:30px;
-      border-radius:12px;
-      text-align:center;
-      max-width:480px
-    }
-    .role{
-      margin-top:16px;
-      padding:10px 14px;
-      border-radius:10px;
-      background:rgba(255,255,255,0.08);
-      font-size:15px
-    }
-    .role span{font-weight:bold}
-    .roles-link{
-      position:fixed;
-      top:12px;
-      left:12px;
-      background:rgba(0,0,0,0.7);
-      padding:6px 10px;
-      border-radius:999px;
-      font-size:13px;
-      text-decoration:none;
-      color:#fff;
-      border:1px solid rgba(255,255,255,0.4);
-      z-index:1000;
-    }
-  </style>
-</head>
+  <head>
+    <meta charset="utf-8">
+    <title>En attente</title>
+  
+    <!-- indispensable pour l'affichage mobile -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background: url("{{ url_for('static', filename='fond.png') }}") center/cover no-repeat;
+        font-family: Arial, sans-serif;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+      }
+  
+      .box {
+        background: rgba(0,0,0,0.7);
+        padding: 30px;
+        border-radius: 12px;
+        text-align: center;
+        max-width: 480px;
+        width: 90vw;           /* ne dépasse jamais l'écran */
+        box-sizing: border-box;
+      }
+  
+      .role {
+        margin-top: 16px;
+        padding: 10px 14px;
+        border-radius: 10px;
+        background: rgba(255,255,255,0.08);
+        font-size: 15px;
+      }
+  
+      .role span {
+        font-weight: bold;
+      }
+  
+      .roles-link {
+        position: fixed;
+        top: 12px;
+        left: 12px;
+        background: rgba(0,0,0,0.7);
+        padding: 6px 10px;
+        border-radius: 999px;
+        font-size: 13px;
+        text-decoration: none;
+        color: #fff;
+        border: 1px solid rgba(255,255,255,0.4);
+        z-index: 1000;
+      }
+  
+      /* Adaptation aux petits écrans */
+      @media (max-width: 600px) {
+        .box {
+          padding: 22px;
+        }
+  
+        .role {
+          font-size: 14px;
+          padding: 8px 10px;
+        }
+  
+        .roles-link {
+          font-size: 11px;
+          padding: 4px 8px;
+        }
+      }
+    </style>
+  </head>  
 <body>
 
   <a class="roles-link" href="{{ url_for('roles_list') }}">? Rôles</a>

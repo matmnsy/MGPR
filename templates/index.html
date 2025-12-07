@@ -1,61 +1,105 @@
 <!doctype html>
 <html lang="fr">
-<head>
-  <meta charset="utf-8">
-  <title>Vote — Joueur {{ votant }}</title>
-  <style>
-    body{
-      margin:0;
-      padding-top:40px;
-      background:url('/static/fond.png') center/cover no-repeat;
-      font-family:Arial;
-      color:#fff;
-      min-height:100vh;
-    }
-    .grid{
-      margin-top:20px;
-      display:grid;
-      grid-template-columns:repeat(4,150px);
-      gap:20px;
-      justify-content:center;
-    }
-    .box{
-      background:rgba(0,0,0,0.6);
-      border-radius:10px;
-      padding:12px;
-      min-width:150px;
-      min-height:150px;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      text-decoration:none;
-      color:#fff;
-    }
-    .box.self{
-      background:rgba(80,80,80,0.7);
-      cursor:default;
-    }
-    .box.elim{
-      background:rgba(80,80,80,0.4);
-      cursor:not-allowed;
-      opacity:0.5;
-    }
-    .img{
-      width:80px;
-      height:80px;
-      border-radius:50%;
-      object-fit:cover;
-      margin-bottom:8px;
-      border:3px solid transparent;
-    }
-    /* Contour rose si amoureux */
-    .lover {
-        border-color:#ff77d9 !important;
-        box-shadow:0 0 10px #ff77d9;
-    }
-  </style>
-</head>
+  <head>
+    <meta charset="utf-8">
+    <title>Vote — Joueur {{ votant }}</title>
+  
+    <!-- Responsive mobile -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <style>
+      body {
+        margin: 0;
+        padding-top: 40px;
+        background: url("{{ url_for('static', filename='fond.png') }}") center/cover no-repeat;
+        font-family: Arial, sans-serif;
+        color: #fff;
+        min-height: 100vh;
+        box-sizing: border-box;
+      }
+  
+      .grid {
+        margin-top: 20px;
+        display: grid;
+  
+        /* Responsive au lieu des 4 colonnes fixes */
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  
+        gap: 20px;
+        justify-content: center;
+        padding: 0 16px;     /* petits marges sur mobiles */
+        box-sizing: border-box;
+      }
+  
+      .box {
+        background: rgba(0,0,0,0.6);
+        border-radius: 10px;
+        padding: 12px;
+        min-height: 150px;
+  
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+  
+        text-decoration: none;
+        color: #fff;
+  
+        transition: transform 0.1s ease;
+      }
+  
+      .box:hover {
+        transform: scale(1.03);
+      }
+  
+      .box.self {
+        background: rgba(80,80,80,0.7);
+        cursor: default;
+        pointer-events: none;
+      }
+  
+      .box.elim {
+        background: rgba(80,80,80,0.4);
+        cursor: not-allowed;
+        opacity: 0.5;
+        pointer-events: none;
+      }
+  
+      .img {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 8px;
+        border: 3px solid transparent;
+        transition: 0.2s ease;
+      }
+  
+      /* Contour rose si amoureux */
+      .lover {
+        border-color: #ff77d9 !important;
+        box-shadow: 0 0 10px #ff77d9;
+      }
+  
+      /* Adaptation pour écrans petits */
+      @media (max-width: 600px) {
+        .grid {
+          gap: 14px;
+          grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        }
+  
+        .box {
+          min-height: 130px;
+          padding: 10px;
+        }
+  
+        .img {
+          width: 70px;
+          height: 70px;
+        }
+      }
+    </style>
+  </head>  
 <body>
 
   <div class="grid">

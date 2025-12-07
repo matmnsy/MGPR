@@ -1,95 +1,153 @@
 <!doctype html>
 <html lang="fr">
-<head>
-  <meta charset="utf-8">
-  <title>Choisir le couple — Admin</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 20px;
-      background: #111 url('/static/fond.png') center/cover no-repeat;
-      font-family: Arial, sans-serif;
-      color: #fff;
-    }
-
-    .wrap {
-      max-width: 900px;
-      margin: 0 auto;
-    }
-
-    h1 {
-      margin-bottom: 10px;
-      font-size: 24px;
-      text-align: center;
-    }
-
-    .subtitle {
-      text-align: center;
-      font-size: 14px;
-      opacity: 0.8;
-      margin-bottom: 20px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      justify-items: center;
-      margin-top: 20px;
-    }
-
-    .player-card {
-      width: 140px;
-      background: rgba(0,0,0,0.6);
-      border-radius: 12px;
-      padding: 12px;
-      text-align: center;
-      transition: 0.2s;
-      border: 2px solid transparent;
-    }
-
-    .player-card.selected {
-      border-color: #ff70d7; /* rose */
-      box-shadow: 0 0 12px #ff70d7;
-    }
-
-    .player-card img {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-bottom: 8px;
-    }
-
-    .submit-box {
-      margin-top: 26px;
-      text-align: center;
-    }
-
-    button {
-      padding: 10px 20px;
-      background: #ff70d7;
-      border: none;
-      border-radius: 8px;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 15px;
-    }
-
-    a.back-btn {
-      display: inline-block;
-      margin-top: 12px;
-      color: #ccc;
-      font-size: 13px;
-      text-decoration: none;
-    }
-
-    input[type="checkbox"] {
-      display: none;
-    }
-  </style>
-</head>
+  <head>
+    <meta charset="utf-8">
+    <title>Choisir le couple — Admin</title>
+  
+    <!-- Responsive mobile -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <style>
+      body {
+        margin: 0;
+        padding: 20px;
+        background: #111 url("{{ url_for('static', filename='fond.png') }}") center/cover no-repeat;
+        font-family: Arial, sans-serif;
+        color: #fff;
+        box-sizing: border-box;
+        min-height: 100vh;
+      }
+  
+      .wrap {
+        max-width: 900px;
+        width: 95vw;               /* responsive */
+        margin: 0 auto;
+        box-sizing: border-box;
+      }
+  
+      h1 {
+        margin-bottom: 10px;
+        font-size: 24px;
+        text-align: center;
+      }
+  
+      .subtitle {
+        text-align: center;
+        font-size: 14px;
+        opacity: 0.8;
+        margin-bottom: 20px;
+      }
+  
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        justify-items: center;
+        margin-top: 20px;
+      }
+  
+      .player-card {
+        width: 140px;
+        background: rgba(0,0,0,0.6);
+        border-radius: 12px;
+        padding: 12px;
+        text-align: center;
+        transition: 0.2s;
+        border: 2px solid transparent;
+        box-sizing: border-box;
+        cursor: pointer;
+      }
+  
+      .player-card:hover {
+        transform: scale(1.04);
+      }
+  
+      .player-card.selected {
+        border-color: #ff70d7;
+        box-shadow: 0 0 12px #ff70d7;
+      }
+  
+      .player-card img {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 8px;
+      }
+  
+      .submit-box {
+        margin-top: 26px;
+        text-align: center;
+      }
+  
+      button {
+        padding: 10px 20px;
+        background: #ff70d7;
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 15px;
+        white-space: nowrap;
+      }
+  
+      a.back-btn {
+        display: inline-block;
+        margin-top: 12px;
+        color: #ccc;
+        font-size: 13px;
+        text-decoration: none;
+      }
+  
+      input[type="checkbox"] {
+        display: none;
+      }
+  
+      /* TABLETTE */
+      @media (max-width: 900px) {
+        .grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+  
+      /* MOBILE */
+      @media (max-width: 600px) {
+        body {
+          padding: 12px;
+        }
+  
+        h1 {
+          font-size: 20px;
+        }
+  
+        .grid {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 14px;
+        }
+  
+        .player-card {
+          width: 120px;
+          padding: 10px;
+        }
+  
+        .player-card img {
+          width: 70px;
+          height: 70px;
+        }
+  
+        button {
+          width: 100%;
+          max-width: 260px;
+        }
+  
+        a.back-btn {
+          display: block;
+          text-align: center;
+        }
+      }
+    </style>
+  </head>  
 <body>
 
 <div class="wrap">

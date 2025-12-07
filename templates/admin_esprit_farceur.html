@@ -1,33 +1,182 @@
 <!doctype html>
 <html lang="fr">
-<head>
-  <meta charset="utf-8">
-  <title>Esprit farceur — échange de rôles</title>
-  <style>
-    body{
-      margin:0;
-      font-family:Arial,sans-serif;
-      background:#111 url('/static/fond.png') center/cover no-repeat;
-      color:#fff;
-      padding:20px;
-    }
-    .wrap{max-width:900px;margin:0 auto;}
-    h1{margin-top:0;margin-bottom:10px;}
-    .info{font-size:14px;color:#ddd;margin-bottom:16px;}
-    .msg{margin-bottom:10px;padding:8px 10px;border-radius:6px;font-size:14px;}
-    .msg.ok{background:rgba(80,160,80,0.4);}
-    .msg.err{background:rgba(200,80,80,0.5);}
-    form{background:rgba(0,0,0,0.6);padding:16px;border-radius:10px;margin-bottom:20px;}
-    label{display:block;margin-bottom:6px;font-size:14px;}
-    select{width:100%;padding:6px;border-radius:6px;border:1px solid #444;background:#222;color:#fff;margin-bottom:12px;}
-    button{padding:8px 14px;border-radius:8px;border:none;background:#2aa;color:#fff;font-weight:600;cursor:pointer;}
-    a.btn-back{display:inline-block;margin-top:10px;font-size:13px;color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,0.4);padding:6px 10px;border-radius:999px;}
-    table{width:100%;border-collapse:collapse;margin-top:16px;background:rgba(0,0,0,0.6);border-radius:10px;overflow:hidden;}
-    th,td{padding:8px;border-bottom:1px solid rgba(255,255,255,0.06);text-align:left;font-size:14px;}
-    .role{font-size:13px;color:#ccc;}
-    .img{width:36px;height:36px;border-radius:50%;object-fit:cover;margin-right:8px;vertical-align:middle;}
-  </style>
-</head>
+    <head>
+        <meta charset="utf-8">
+        <title>Esprit farceur — échange de rôles</title>
+      
+        <!-- Responsive mobile -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+      
+        <style>
+          body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #111 url("{{ url_for('static', filename='fond.png') }}") center/cover no-repeat;
+            color: #fff;
+            padding: 20px;
+            box-sizing: border-box;
+            min-height: 100vh;
+          }
+      
+          .wrap {
+            max-width: 900px;
+            width: 95vw;                /* responsive */
+            margin: 0 auto;
+            box-sizing: border-box;
+          }
+      
+          h1 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 24px;
+          }
+      
+          .info {
+            font-size: 14px;
+            color: #ddd;
+            margin-bottom: 16px;
+          }
+      
+          .msg {
+            margin-bottom: 10px;
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 14px;
+          }
+      
+          .msg.ok {
+            background: rgba(80,160,80,0.4);
+          }
+      
+          .msg.err {
+            background: rgba(200,80,80,0.5);
+          }
+      
+          form {
+            background: rgba(0,0,0,0.6);
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+          }
+      
+          label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 14px;
+          }
+      
+          select {
+            width: 100%;
+            padding: 6px;
+            border-radius: 6px;
+            border: 1px solid #444;
+            background: #222;
+            color: #fff;
+            margin-bottom: 12px;
+          }
+      
+          button {
+            padding: 8px 14px;
+            border-radius: 8px;
+            border: none;
+            background: #2aa;
+            color: #fff;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+          }
+      
+          a.btn-back {
+            display: inline-block;
+            margin-top: 10px;
+            font-size: 13px;
+            color: #fff;
+            text-decoration: none;
+            border: 1px solid rgba(255,255,255,0.4);
+            padding: 6px 10px;
+            border-radius: 999px;
+            white-space: nowrap;
+          }
+      
+          .table-wrapper {
+            width: 100%;
+            overflow-x: auto;         /* scroll horizontal si petit écran */
+          }
+      
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+            background: rgba(0,0,0,0.6);
+            border-radius: 10px;
+            overflow: hidden;
+            min-width: 500px;         /* évite compression extrême */
+          }
+      
+          th, td {
+            padding: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            text-align: left;
+            font-size: 14px;
+            vertical-align: middle;
+          }
+      
+          .role {
+            font-size: 13px;
+            color: #ccc;
+          }
+      
+          .img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 8px;
+            vertical-align: middle;
+          }
+      
+          /* Responsive amélioré */
+          @media (max-width: 600px) {
+            body {
+              padding: 12px;
+            }
+      
+            h1 {
+              font-size: 20px;
+            }
+      
+            form {
+              padding: 14px;
+            }
+      
+            th, td {
+              padding: 6px;
+              font-size: 12px;
+            }
+      
+            .role {
+              font-size: 12px;
+            }
+      
+            button {
+              width: 100%;
+              max-width: 260px;
+              margin: 10px auto 0;
+              display: block;
+            }
+      
+            a.btn-back {
+              display: block;
+              text-align: center;
+              width: 100%;
+              max-width: 260px;
+              margin-left: auto;
+              margin-right: auto;
+            }
+          }
+        </style>
+      </head>      
 <body>
   <div class="wrap">
     <h1>Esprit farceur — échange de rôles</h1>
