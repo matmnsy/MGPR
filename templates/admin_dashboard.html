@@ -262,7 +262,10 @@
         </a>
 
         <a class="btn secondary" href="{{ url_for('admin_logout') }}">Logout</a>
-      </div>
+        
+        <a class="btn secondary" href="{{ url_for('admin_reset_votes') }}" onclick="return confirm('Remettre tous les votes à 0 et permettre un nouveau vote ?');">
+            Reset votes
+        </a>
     </div>
 
     <div class="grid-and-table">

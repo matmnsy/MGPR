@@ -323,13 +323,28 @@ def roles_list():
 # RESET
 # -----------------------------------------------------
 
-def reset_all():
-    global votes, joueurs_ayant_vote, joueur_vote_pour, admin_started, reveal_results
-    global eliminated_players, couple_players, necro_messages, necro_next_id
+def reset_votes_only():
+    """
+    Remet les votes à zéro, permet de relancer un tour de vote
+    sans changer les rôles ni les joueurs éliminés.
+    """
+    global votes, joueurs_ayant_vote, joueur_vote_pour, reveal_results
 
     votes = {j: 0 for j in joueurs}
     joueurs_ayant_vote.clear()
     joueur_vote_pour.clear()
+    reveal_results = False  # on cache les anciens résultats
+
+
+def reset_all():
+    """
+    Nouvelle partie complète : nouveaux rôles, plus aucun éliminé,
+    messages de morts effacés.
+    """
+    global votes, joueurs_ayant_vote, joueur_vote_pour, admin_started, reveal_results
+    global eliminated_players, couple_players, necro_messages, necro_next_id
+
+    reset_votes_only()
     eliminated_players.clear()
     couple_players.clear()
 
@@ -342,29 +357,13 @@ def reset_all():
 
 
 def reset_round_keep_eliminated():
-    global votes, joueurs_ayant_vote, joueur_vote_pour, admin_started, reveal_results
-    # On NE touche PAS à necro_messages / necro_next_id ici
-
-    votes = {j: 0 for j in joueurs}
-    joueurs_ayant_vote.clear()
-    joueur_vote_pour.clear()
+    """
+    Prochaine nuit : on garde les éliminés et les messages,
+    mais on ferme la phase de vote et on remet les votes à zéro.
+    """
+    global admin_started
+    reset_votes_only()
     admin_started = False
-    reveal_results = False
-
-
-@app.route("/reset")
-def reset():
-    votant = request.args.get("votant")
-    reset_all()
-
-    if session.get("is_admin"):
-        return redirect(url_for("admin_dashboard"))
-
-    if votant in joueurs:
-        return redirect(url_for("vote_page", votant=votant))
-
-    return redirect(url_for("select_player"))
-
 
 # -----------------------------------------------------
 # ADMIN
@@ -385,6 +384,19 @@ def admin_result():
         roles=roles,
         joueur_vote_pour=joueur_vote_pour
     )
+
+@app.route("/admin/reset_votes")
+@admin_required
+def admin_reset_votes():
+    """
+    Reset des votes uniquement (en cas d'égalité, erreur, etc.).
+    On garde les éliminés, les rôles et la phase de vote reste ouverte.
+    """
+    global admin_started
+    reset_votes_only()
+    # On laisse admin_started tel quel : si la phase était ouverte,
+    # elle reste ouverte et les joueurs peuvent revoter immédiatement.
+    return redirect(url_for("admin_dashboard"))
 
 
 @app.route("/admin", methods=["GET", "POST"])
