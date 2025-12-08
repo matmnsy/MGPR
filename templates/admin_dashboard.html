@@ -1,380 +1,359 @@
 <!doctype html>
 <html lang="fr">
-  <head>
-    <meta charset="utf-8">
-    <title>Admin dashboard</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-    <style>
-      :root {
-        --bg:#111;
-        --card:rgba(0,0,0,0.6);
-        --accent:#2aa;
-        --ok:#8f8;
-        --nok:#f88;
-        --lover:#ff70d7;
-        --top:#ff5555;
-      }
-  
-      body {
-        margin: 0;
-        font-family: Inter, Arial, sans-serif;
-        background: var(--bg) url("{{ url_for('static', filename='fond.png') }}") center/cover no-repeat;
-        color: #fff;
-        padding: 20px;
-        box-sizing: border-box;
-        min-height: 100vh;
-      }
-  
-      .wrap {
-        max-width: 1100px;
-        width: 95vw;                    /* responsive */
-        margin: 0 auto;
-        box-sizing: border-box;
-      }
-  
-      .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 16px;
-        flex-wrap: wrap;
-      }
-  
-      .title {
-        font-size: 20px;
-        font-weight: 700;
-      }
-  
-      .controls {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        align-items: center;
-      }
-  
-      .btn {
-        background: var(--accent);
-        color: #fff;
-        padding: 8px 12px;
-        border-radius: 8px;
-        text-decoration: none;
-        font-weight: 600;
-        display: inline-block;
-        white-space: nowrap;
-      }
-  
-      .btn.secondary {
-        background: transparent;
-        border: 1px solid rgba(255,255,255,0.06);
-      }
-  
-      .status {
-        background: var(--card);
-        padding: 10px;
-        border-radius: 8px;
-        font-size: 14px;
-      }
-  
-      .grid-and-table {
-        display: grid;
-        grid-template-columns: 1fr 360px;
-        gap: 18px;
-        margin-top: 16px;
-      }
-  
-      .grid {
-        display: grid;
-        grid-template-columns: repeat(4,1fr);
-        gap: 12px;
-      }
-  
-      .card {
-        background: var(--card);
-        padding: 12px;
-        border-radius: 10px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        box-sizing: border-box;
-      }
-  
-      .card.eliminated {
-        opacity: 0.4;
-        filter: grayscale(1);
-      }
-  
-      .card.lover {
-        box-shadow: 0 0 12px var(--lover);
-        border: 2px solid var(--lover);
-      }
-  
-      .img {
-        width: 72px;
-        height: 72px;
-        border-radius: 50%;
-        object-fit: cover;
-        background: #333;
-        margin-bottom: 8px;
-      }
-  
-      .small {
-        font-size: 13px;
-        color: #ddd;
-      }
-  
-      .count {
-        margin-top: 8px;
-        background: rgba(255,255,255,0.06);
-        padding: 6px 8px;
-        border-radius: 10px;
-      }
-  
-      .table-wrapper {
-        width: 100%;
-        overflow-x: auto;       /* permet le scroll horizontal sur mobile */
-      }
-  
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        min-width: 500px;       /* évite compression totale */
-      }
-  
-      th, td {
-        padding: 8px;
-        border-bottom: 1px solid rgba(255,255,255,0.04);
-        text-align: left;
-        white-space: nowrap;
-      }
-  
-      .ok { color: var(--ok); font-weight: 700; }
-      .ko { color: var(--nok); }
-      .lover-text { color: var(--lover); font-weight: 700; }
-      .top-voted { color: var(--top); font-weight: 700; }
-  
-      .footer {
-        margin-top: 18px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 12px;
-        flex-wrap: wrap;
-      }
-  
-      /* TABLETTE */
-      @media (max-width: 900px) {
-        .grid-and-table {
-          grid-template-columns: 1fr;
-        }
-        .grid {
-          grid-template-columns: repeat(3,1fr);
-        }
-      }
-  
-      /* MOBILE */
-      @media (max-width: 600px) {
-  
-        body {
-          padding: 12px;
-        }
-  
-        .title {
-          font-size: 18px;
-        }
-  
-        .controls .btn {
-          padding: 7px 10px;
-          font-size: 13px;
-        }
-  
-        .grid {
-          grid-template-columns: repeat(2,1fr);
-          gap: 10px;
-        }
-  
-        .img {
-          width: 64px;
-          height: 64px;
-        }
-  
-        th, td {
-          padding: 6px;
-          font-size: 12px;
-        }
-  
-        .status {
-          font-size: 13px;
-        }
-  
-        .footer {
-          flex-direction: column;
-          text-align: center;
-        }
-      }
-    </style>
-  </head>  
+<head>
+  <meta charset="utf-8">
+  <title>Admin dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    :root {
+      --bg:#111;
+      --card:rgba(0,0,0,0.6);
+      --accent:#2aa;
+      --ok:#8f8;
+      --nok:#f88;
+      --lover:#ff70d7;
+      --top:#ff5555;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      background: var(--bg) url("{{ url_for('static', filename='fond.png') }}") center/cover no-repeat;
+      color: #fff;
+      padding: 20px;
+      box-sizing: border-box;
+      min-height: 100vh;
+    }
+
+    .wrap {
+      max-width: 1100px;
+      width: 95vw;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .title {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .btn {
+      background: var(--accent);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-block;
+      white-space: nowrap;
+    }
+
+    .btn.secondary {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .status {
+      background: var(--card);
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    .grid-and-table {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 18px;
+      margin-top: 16px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 12px;
+    }
+
+    .card {
+      background: var(--card);
+      padding: 12px;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      box-sizing: border-box;
+    }
+
+    .card.eliminated { opacity: 0.4; filter: grayscale(1); }
+    .card.lover { box-shadow: 0 0 12px var(--lover); border: 2px solid var(--lover); }
+
+    .img {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #333;
+      margin-bottom: 8px;
+    }
+
+    .small {
+      font-size: 13px;
+      color: #ddd;
+    }
+
+    .count {
+      margin-top: 8px;
+      background: rgba(255,255,255,0.06);
+      padding: 6px 8px;
+      border-radius: 10px;
+    }
+
+    .table-wrapper { width: 100%; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 500px; }
+
+    th, td {
+      padding: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .ok { color: var(--ok); font-weight: 700; }
+    .ko { color: var(--nok); }
+    .lover-text { color: var(--lover); font-weight: 700; }
+    .top-voted { color: var(--top); font-weight: 700; }
+
+    .footer {
+      margin-top: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* Responsive tablette */
+    @media (max-width: 900px) {
+      .grid-and-table { grid-template-columns: 1fr; }
+      .grid { grid-template-columns: repeat(3,1fr); }
+    }
+
+    /* Responsive mobile */
+    @media (max-width: 600px) {
+      body { padding: 12px; }
+      .title { font-size: 18px; }
+      .controls .btn { padding: 7px 10px; font-size: 13px; }
+      .grid { grid-template-columns: repeat(2,1fr); gap: 10px; }
+      .img { width: 64px; height: 64px; }
+      th, td { padding: 6px; font-size: 12px; }
+      .status { font-size: 13px; }
+      .footer { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+
 <body>
-  <div class="wrap">
-    <div class="header">
-      <div>
-        <div class="title">Admin — Dashboard</div>
-        <div class="small">Votants: {{ total_voters }} / {{ status|length }}</div>
-      </div>
+<div class="wrap">
 
-      <div class="controls">
-        {% if not admin_started %}
-          <a class="btn" href="{{ url_for('admin_start') }}">Start voting</a>
-        {% else %}
-          <span class="status">Phase de vote active</span>
-        {% endif %}
-
-        <a class="btn {% if not all_voted %}secondary{% endif %}"
-           href="{{ url_for('admin_reveal') }}"
-           {% if not all_voted %}onclick="return confirm('Tous les joueurs n’ont pas encore voté. Continuer ?');"{% endif %}>
-           Reveal votes
-        </a>
-
-        <a class="btn secondary"
-           href="{{ url_for('admin_next_night') }}"
-           onclick="return confirm('Prochaine nuit : réinitialiser les votes, mais garder les joueurs éliminés ?');">
-           Prochaine nuit
-        </a>
-
-        <a class="btn secondary"
-           href="{{ url_for('reset') }}"
-           onclick="return confirm('Nouvelle partie : remettre tous les votes à zéro et faire revenir tous les joueurs (nouvelles distributions de rôles) ?');">
-           Nouvelle partie
-        </a>
-
-        <a class="btn secondary" href="{{ url_for('admin_esprit_farceur') }}">
-          Esprit farceur
-        </a>
-
-        <a class="btn secondary" href="{{ url_for('admin_couple') }}">
-          Couple maudit
-        </a>
-
-        <a class="btn secondary" href="{{ url_for('admin_necro_chat') }}">
-          Nécro – messages
-        </a>
-
-        <a class="btn secondary" href="{{ url_for('admin_logout') }}">Logout</a>
-        
-        <a class="btn secondary" href="{{ url_for('admin_reset_votes') }}" onclick="return confirm('Remettre tous les votes à 0 et permettre un nouveau vote ?');">
-            Reset votes
-        </a>
+  <!-- HEADER -->
+  <div class="header">
+    <div>
+      <div class="title">Admin — Dashboard</div>
+      <div class="small">Votants : {{ total_voters }} / {{ joueurs|length }}</div>
     </div>
 
-    <div class="grid-and-table">
-      <div>
-        <div style="margin-bottom:10px;color:#ddd">
-          Grille (aperçu admin) — rôles visibles uniquement ici
-        </div>
-        <div class="grid">
-          {% for j in joueurs %}
-            <div class="card
-                        {% if j in eliminated_players %} eliminated{% endif %}
-                        {% if j in couple_players %} lover{% endif %}">
-              <img class="img" src="/static/{{ roles[j]['icon'] }}" alt="{{ roles[j]['name'] }}">
-              <div>Joueur {{ j }}</div>
-              <div class="small">
-                {{ roles[j]['name'] }}
-                {% if j in couple_players %} — <span class="lover-text">Amoureux</span>{% endif %}
-              </div>
-              <div class="count">Votes: {{ votes[j] }}</div>
-              <div class="small" style="margin-top:6px">
-                {% if j in eliminated_players %}
-                  <span class="ko">Éliminé (hors jeu)</span>
-                {% else %}
-                  {% if j in joueurs_ayant_vote %}
-                    <span class="ok">A voté</span>
-                  {% else %}
-                    <span class="ko">Pas encore</span>
-                  {% endif %}
-                {% endif %}
-              </div>
-            </div>
-          {% endfor %}
-        </div>
-      </div>
+    <div class="controls">
 
-      <div class="card" style="padding:12px">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-          <strong>Suivi des votants</strong>
-          <span class="small">{{ total_voters }} / {{ status|length }}</span>
-        </div>
+      {% if not admin_started %}
+        <a class="btn" href="{{ url_for('admin_start') }}">Start voting</a>
+      {% else %}
+        <span class="status">Phase de vote active</span>
+      {% endif %}
 
-        <table>
-          <thead>
-            <tr>
-              <th>Joueur</th>
-              <th>Rôle</th>
-              <th>Statut</th>
-              <th>Votes</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for j, a in status %}
-              <tr>
-                <td class="
-                    {% if j in couple_players %}lover-text{% endif %}
-                    {% if reveal_results and j in top_voted_players and max_votes > 0 %} top-voted{% endif %}
-                ">
-                  Joueur {{ j }}
-                </td>
-                <td>{{ roles[j]['name'] }}</td>
-                <td>
-                  {% if j in eliminated_players %}
-                    <span class="ko">Éliminé</span>
-                  {% else %}
-                    {% if a %}
-                      <span class="ok">A voté</span>
-                    {% else %}
-                      <span class="ko">Pas encore</span>
-                    {% endif %}
-                  {% endif %}
-                </td>
-                <td>{{ votes[j] }}</td>
-                <td>
-                  {% if j in eliminated_players %}
-                    —
-                  {% else %}
-                    <a class="btn secondary"
-                       href="{{ url_for('admin_eliminate', joueur=j) }}"
-                       onclick="return confirm('Éliminer ce joueur (hors jeu pour la partie) ?');">
-                       Éliminer
-                    </a>
-                  {% endif %}
-                </td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+      <a class="btn {% if not all_voted %}secondary{% endif %}"
+         href="{{ url_for('admin_reveal') }}"
+         {% if not all_voted %}onclick="return confirm('Tous les joueurs n’ont pas encore voté. Continuer ?');"{% endif %}>
+         Reveal votes
+      </a>
 
-        <div style="margin-top:12px;font-size:13px;color:#ccc">
-          <strong>Statut admin :</strong>
-          {% if admin_started %} phase ouverte {% else %} en attente {% endif %} —
-          {% if reveal_results %} résultats révélés {% else %} résultats cachés {% endif %}
-        </div>
-      </div>
-    </div>
+      <a class="btn secondary"
+         href="{{ url_for('admin_reset_votes') }}"
+         onclick="return confirm('Remettre tous les votes à 0 et permettre un nouveau vote ?');">
+         Reset votes
+      </a>
 
-    <div class="footer">
-      <div class="small">
-        Conseil : "Start voting" pour lancer la phase, "Reveal votes" pour révéler qui est éliminé et son rôle.
-        "Prochaine nuit" garde les éliminés, "Nouvelle partie" relance tout avec une nouvelle distribution de rôles.
-      </div>
-      <div>
-        <a class="btn" href="{{ url_for('admin_result') }}"
-           {% if not all_voted %}style="opacity:0.5;pointer-events:none;"{% endif %}>
-           Voir résultat
-        </a>
-      </div>
+      <a class="btn secondary"
+         href="{{ url_for('admin_next_night') }}"
+         onclick="return confirm('Prochaine nuit : réinitialiser les votes, mais garder les joueurs éliminés ?');">
+         Prochaine nuit
+      </a>
+
+      <a class="btn secondary"
+         href="{{ url_for('reset') }}"
+         onclick="return confirm('Nouvelle partie : tout réinitialiser et redistribuer les rôles ?');">
+         Nouvelle partie
+      </a>
+
+      <a class="btn secondary" href="{{ url_for('admin_esprit_farceur') }}">
+        Esprit farceur
+      </a>
+
+      <a class="btn secondary" href="{{ url_for('admin_couple') }}">
+        Couple maudit
+      </a>
+
+      <a class="btn secondary" href="{{ url_for('admin_necro_chat') }}">
+        Nécro – messages
+      </a>
+
+      <a class="btn secondary" href="{{ url_for('admin_logout') }}">
+        Logout
+      </a>
+
     </div>
   </div>
+
+  <!-- GRID + TABLE -->
+  <div class="grid-and-table">
+
+    <!-- GRID -->
+    <div>
+      <div style="margin-bottom:10px;color:#ddd">
+        Grille (aperçu admin) — rôles visibles uniquement ici
+      </div>
+
+      <div class="grid">
+        {% for j in joueurs %}
+          <div class="card
+               {% if j in eliminated_players %} eliminated{% endif %}
+               {% if j in couple_players %} lover{% endif %}">
+            <img class="img" src="/static/{{ roles[j]['icon'] }}" alt="{{ roles[j]['name'] }}">
+            <div>Joueur {{ j }}</div>
+            <div class="small">
+              {{ roles[j]['name'] }}
+              {% if j in couple_players %}
+                — <span class="lover-text">Amoureux</span>
+              {% endif %}
+            </div>
+            <div class="count">Votes : {{ votes[j] }}</div>
+            <div class="small" style="margin-top:6px">
+              {% if j in eliminated_players %}
+                <span class="ko">Éliminé</span>
+              {% else %}
+                {% if j in joueurs_ayant_vote %}
+                  <span class="ok">A voté</span>
+                {% else %}
+                  <span class="ko">Pas encore</span>
+                {% endif %}
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="card">
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <strong>Suivi des votants</strong>
+        <span class="small">{{ total_voters }} / {{ joueurs|length }}</span>
+      </div>
+
+      <table>
+        <thead>
+        <tr>
+          <th>Joueur</th>
+          <th>Rôle</th>
+          <th>Statut</th>
+          <th>Votes</th>
+          <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for j, a in status %}
+          <tr>
+            <td class="
+              {% if j in couple_players %}lover-text{% endif %}
+              {% if reveal_results and j in top_voted_players and max_votes > 0 %} top-voted{% endif %}
+            ">
+              Joueur {{ j }}
+            </td>
+            <td>{{ roles[j]['name'] }}</td>
+
+            <td>
+              {% if j in eliminated_players %}
+                <span class="ko">Éliminé</span>
+              {% else %}
+                {% if a %}
+                  <span class="ok">A voté</span>
+                {% else %}
+                  <span class="ko">Pas encore</span>
+                {% endif %}
+              {% endif %}
+            </td>
+
+            <td>{{ votes[j] }}</td>
+
+            <td>
+              {% if j in eliminated_players %}
+                —
+              {% else %}
+                <a class="btn secondary"
+                   href="{{ url_for('admin_eliminate', joueur=j) }}"
+                   onclick="return confirm('Éliminer ce joueur ?');">
+                  Éliminer
+                </a>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+
+      <div style="margin-top:12px;font-size:13px;color:#ccc">
+        <strong>Statut admin :</strong>
+        {% if admin_started %} phase ouverte {% else %} en attente {% endif %} —
+        {% if reveal_results %} résultats révélés {% else %} résultats cachés {% endif %}
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="small">
+      Conseil : "Start voting", puis "Reveal votes".<br>
+      "Prochaine nuit" garde les éliminés.  
+      "Nouvelle partie" relance tout avec de nouveaux rôles.
+    </div>
+
+    <div>
+      <a class="btn" href="{{ url_for('admin_result') }}"
+         {% if not all_voted %}style="opacity:0.5;pointer-events:none;"{% endif %}>
+        Voir résultat
+      </a>
+    </div>
+  </div>
+
+</div>
 </body>
 </html>
