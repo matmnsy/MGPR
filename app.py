@@ -368,6 +368,26 @@ def reset_round_keep_eliminated():
 # -----------------------------------------------------
 # ADMIN
 # -----------------------------------------------------
+@app.route("/reset")
+def reset():
+    """
+    Nouvelle partie déclenchée depuis un client (admin ou joueur).
+    Utilise reset_all() puis redirige au bon endroit.
+    """
+    votant = request.args.get("votant")
+    reset_all()
+
+    # Si c'est l'admin, retour au dashboard
+    if session.get("is_admin"):
+        return redirect(url_for("admin_dashboard"))
+
+    # Si un joueur a appelé /reset?votant=3
+    if votant in joueurs:
+        return redirect(url_for("vote_page", votant=votant))
+
+    # Fallback : page de sélection de joueur
+    return redirect(url_for("select_player"))
+
 
 @app.route("/admin/result")
 @admin_required
