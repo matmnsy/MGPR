@@ -136,7 +136,7 @@
           <img
             class="elim-img"
             src="/static/{% if is_tie %}role_cache.png{% else %}{{ roles[w]['icon'] }}{% endif %}"
-            alt="{{ roles[w]['name'] }}"
+            alt="{% if not is_tie %}{{ roles[w]['name'] }}{% endif %}"
           >
           <div><strong>Joueur {{ w }}</strong></div>
           <div style="font-size:13px;color:#ddd">{{ roles[w]['name'] }}</div>
