@@ -19,74 +19,74 @@ base_roles = [
         "icon": "role_enchanteresse.png",
         "camp": "le Village",
         "description": (
-            "2 pouvoirs à utiliser pendant la nuit : Relique de vie (ressuscite) et Relique de mort (tue)."
+            "Envieuse de faire preuve de tes pouvoirs, deux reliques s’offrent à toi : une de mort et une de vie. Tu peux les utiliser une fois durant la partie, quand le metteur en scène t’appelle ou bien tu peux décider de ne rien faire."
         ),
     },
     {
         "name": "Démon",
         "icon": "role_demon.png",
         "camp": "les Démons",
-        "description": "Peut éliminer une personne chaque nuit.",
+        "description": "Épris par la soif de sang, vous vous réunissez chaque nuit, avec les deux autres démons, afin de décider de la mort d’un membre du groupe. ",
     },
     {
         "name": "Sans visage",
         "icon": "role_sans_visage.png",
         "camp": "le Village",
-        "description": "Peut regarder chaque nuit le rôle d’un joueur.",
+        "description": "Privé de tout sens, tes yeux sont aujourd’hui la clé pour t’échapper. Chaque nuit, tu pourras espionner discrètement l’ensemble du groupe, sans te faire remarquer. ",
     },
     {
         "name": "Cartomancienne",
         "icon": "role_cartomancienne.png",
         "camp": "le Village",
-        "description": "Demande une info gentil/méchant sur un joueur.",
+        "description": "De par tes pouvoirs de médiumnité, tu as la possibilité de désigner une personne, chaque nuit, pour savoir si cette personne est un esprit bienfaiteur ou non. ",
     },
     {
         "name": "Amant maudit",
         "icon": "role_amant_maudit.png",
         "camp": "le Village",
-        "description": "Choisit un couple. Peut en choisir un nouveau si le premier meurt.",
+        "description": "Épris par la solitude et le chagrin d’amour, tu nommeras, en début de partie, deux amants maudits qui seront liés jusqu’à la fin. S’ils meurent en cours de route, tu les nommeras à nouveau.",
     },
     {
         "name": "Esprit farceur",
         "icon": "role_esprit_farceur.png",
         "camp": "le Village",
-        "description": "Peut échanger le rôle de deux joueurs.",
+        "description": "Rempli d’idées plus malicieuses les unes que les autres, tu te joueras des membres du groupe en échangeant ta carte avec quelqu’un d’autre pour semer le trouble. ",
     },
     {
         "name": "Rédempteur",
         "icon": "role_redempteur.png",
         "camp": "le Village",
-        "description": "Protège un joueur chaque nuit.",
+        "description": "Écoeuré par l’odeur âcre du sang, tu décides désormais de protéger au lieu de tuer. Chaque nuit tu nommeras, si tu le souhaite, une personne différente à protéger contre la violence des démons. ",
     },
     {
-        "name": "Vagabond",
-        "icon": "role_vagabond.png",
+        "name": "Froussard",
+        "icon": "role_froussard.png",
         "camp": "le Village",
-        "description": "Dort chez quelqu’un chaque nuit. Meurt si cette personne est tuée.",
+        "description": "Effrayé par la noirceur de la nuit, tu choisis chaque nuit un joueur derrière qui te cacher. S’il meurt, tu meurs avec lui. Si les démons t’attaquent pendant que tu es caché, tu survis.",
     },
     {
         "name": "Démon",
         "icon": "role_demon.png",
         "camp": "les Démons",
-        "description": "Peut éliminer une personne chaque nuit.",
+        "description": "Épris par la soif de sang, vous vous réunissez chaque nuit, avec les deux autres démons, afin de décider de la mort d’un membre du groupe. ",
     },
     {
         "name": "Nécromancien",
         "icon": "role_necromancien.png",
         "camp": "le Village",
-        "description": "Peut consulter la personne décédée précédemment.",
+        "description": "Muni de tes dons en nécromancie, tu pourras, après chaque tour, communiquer au travers d'une question unique avec le ou les morts du tour précédent. ",
     },
     {
         "name": "Exorciste",
         "icon": "role_exorciste.png",
         "camp": "le Village",
-        "description": "Donne un vote supplémentaire à quelqu’un.",
+        "description": "Muni de tes pouvoirs d’exorciste, tu as la possibilité, chaque nuit, de désigner quelqu’un que tu penses être possédé par un démon, afin de le faire taire. En annulant son vote et en l’empêchant de participer au prochain rassemblement. Cette personne choisie ne peut être désignée 2 fois de suite. ",
     },
     {
         "name": "Démon",
         "icon": "role_demon.png",
         "camp": "les Démons",
-        "description": "Peut éliminer une personne chaque nuit.",
+        "description": "Épris par la soif de sang, vous vous réunissez chaque nuit, avec les deux autres démons, afin de décider de la mort d’un membre du groupe. ",
     },
 ]
 
