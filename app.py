@@ -2,11 +2,46 @@ import os
 from flask import Flask, render_template, redirect, url_for, request, session, jsonify
 from functools import wraps
 import random
+from flask import abort
 
 app = Flask(__name__)
 
 app.secret_key = os.environ.get("SECRET_KEY", "dev_secret_key")
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "dev_password")
+SPECTATOR_KEY = os.environ.get("SPECTATOR_KEY", "")  # optionnel (recommandé)
+
+@app.route("/api/spectator_state")
+def api_spectator_state():
+    # Optionnel: sécuriser l’accès via ?key=...
+    if SPECTATOR_KEY:
+        if request.args.get("key") != SPECTATOR_KEY:
+            abort(403)
+
+    total_voters = len(joueurs_ayant_vote)
+    all_voted = (total_voters == len(joueurs))
+
+    max_votes_value = max(votes.values()) if votes else 0
+    top_voted_players = [j for j, v in votes.items() if v == max_votes_value] if max_votes_value > 0 else []
+
+    # On renvoie tout ce que le spectateur doit voir (y compris les rôles)
+    return jsonify({
+        "joueurs": joueurs,
+        "roles": roles,  # { "1": {"name":..., "icon":...}, ... }
+        "votes": votes,
+        "joueurs_ayant_vote": list(joueurs_ayant_vote),
+        "joueur_vote_pour": joueur_vote_pour,
+        "admin_started": admin_started,
+        "reveal_results": reveal_results,
+        "eliminated_players": list(eliminated_players),
+        "couple_players": list(couple_players),
+        "total_voters": total_voters,
+        "all_voted": all_voted,
+        "max_votes": max_votes_value,
+        "top_voted_players": top_voted_players,
+
+        # Optionnel: si tu veux aussi afficher les messages nécro côté spectateur
+        "necro_messages": necro_messages,
+    })
 
 
 # Joueurs (1 à 12)
@@ -647,6 +682,15 @@ def necro_chat(joueur):
         joueur=joueur,
         messages=visible_messages,
     )
+
+@app.route("/spectator")
+def spectator():
+    # Optionnel: sécuriser l’accès via ?key=...
+    if SPECTATOR_KEY:
+        if request.args.get("key") != SPECTATOR_KEY:
+            return "Forbidden", 403
+
+    return render_template("spectator_dashboard.html", spectator_key=SPECTATOR_KEY)
 
 
 # -----------------------------------------------------

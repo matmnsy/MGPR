@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Spectateur — Live</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    :root {
+      --bg:#111;
+      --card:rgba(0,0,0,0.6);
+      --accent:#2aa;
+      --ok:#8f8;
+      --nok:#f88;
+      --lover:#ff70d7;
+      --top:#ff5555;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      background:
+        linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+        url("{{ url_for('static', filename='fond.png') }}") center/cover no-repeat;
+      color: #fff;
+      padding: 20px;
+      box-sizing: border-box;
+      min-height: 100vh;
+
+      /* Read-only: empêcher la sélection */
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .wrap {
+      max-width: 1100px;
+      width: 95vw;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .title {
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .status {
+      background: var(--card);
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    .grid-and-side {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 18px;
+      margin-top: 16px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 12px;
+    }
+
+    .card {
+      background: var(--card);
+      padding: 12px;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      box-sizing: border-box;
+    }
+
+    .card.eliminated { opacity: 0.4; filter: grayscale(1); }
+    .card.lover { box-shadow: 0 0 12px var(--lover); border: 2px solid var(--lover); }
+    .card.topvoted { box-shadow: 0 0 12px var(--top); border: 2px solid var(--top); }
+
+    .img {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #333;
+      margin-bottom: 8px;
+    }
+
+    .small {
+      font-size: 13px;
+      color: #ddd;
+    }
+
+    .count {
+      margin-top: 8px;
+      background: rgba(255,255,255,0.06);
+      padding: 6px 8px;
+      border-radius: 10px;
+    }
+
+    .ok { color: var(--ok); font-weight: 700; }
+    .ko { color: var(--nok); }
+    .lover-text { color: var(--lover); font-weight: 700; }
+    .top-voted { color: var(--top); font-weight: 700; }
+
+    .panel {
+      background: var(--card);
+      padding: 12px;
+      border-radius: 10px;
+    }
+
+    table { width: 100%; border-collapse: collapse; min-width: 300px; }
+    th, td {
+      padding: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      text-align: left;
+      white-space: nowrap;
+      font-size: 13px;
+    }
+
+    /* Responsive tablette */
+    @media (max-width: 900px) {
+      .grid-and-side { grid-template-columns: 1fr; }
+      .grid { grid-template-columns: repeat(3,1fr); }
+    }
+
+    /* Responsive mobile */
+    @media (max-width: 600px) {
+      body { padding: 12px; }
+      .title { font-size: 18px; }
+      .grid { grid-template-columns: repeat(2,1fr); gap: 10px; }
+      .img { width: 64px; height: 64px; }
+      th, td { padding: 6px; font-size: 12px; }
+      .status { font-size: 13px; }
+    }
+
+    /* “Le spectateur ne touche rien” */
+    .no-input {
+      pointer-events: none; /* aucune interaction souris/touch */
+    }
+  </style>
+</head>
+
+<body>
+<div class="wrap no-input">
+
+  <div class="header">
+    <div>
+      <div class="title">Spectateur — Live</div>
+      <div class="small" id="subtitle">Chargement…</div>
+    </div>
+    <div class="status" id="gameStatus">Connexion…</div>
+  </div>
+
+  <div class="grid-and-side">
+
+    <div>
+      <div style="margin-bottom:10px;color:#ddd">
+        Grille spectateur — rôles & états visibles
+      </div>
+
+      <div class="grid" id="grid"></div>
+    </div>
+
+    <div class="panel">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <strong>Suivi</strong>
+        <span class="small" id="votersCount">—</span>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Joueur</th>
+            <th>Statut</th>
+            <th>Votes</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+
+      <div style="margin-top:12px;font-size:13px;color:#ccc" id="adminFlags">—</div>
+
+      <div style="margin-top:12px;font-size:13px;color:#ccc" id="necroBox"></div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  // Bloquer clavier (dans la limite du navigateur)
+  window.addEventListener("keydown", (e) => { e.preventDefault(); }, { passive: false });
+  window.addEventListener("keypress", (e) => { e.preventDefault(); }, { passive: false });
+  window.addEventListener("keyup", (e) => { e.preventDefault(); }, { passive: false });
+
+  const apiUrl = "/api/spectator_state";
+
+  const grid = document.getElementById("grid");
+  const subtitle = document.getElementById("subtitle");
+  const gameStatus = document.getElementById("gameStatus");
+  const votersCount = document.getElementById("votersCount");
+  const tableBody = document.getElementById("tableBody");
+  const adminFlags = document.getElementById("adminFlags");
+  const necroBox = document.getElementById("necroBox");
+
+  function escapeHtml(s) {
+    return String(s)
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  function render(state) {
+    const joueurs = state.joueurs || [];
+    const roles = state.roles || {};
+    const votes = state.votes || {};
+    const votedSet = new Set(state.joueurs_ayant_vote || []);
+    const eliminatedSet = new Set(state.eliminated_players || []);
+    const coupleSet = new Set(state.couple_players || []);
+    const topSet = new Set(state.top_voted_players || []);
+
+    subtitle.textContent = `Votants : ${state.total_voters ?? 0} / ${joueurs.length}`;
+    votersCount.textContent = `${state.total_voters ?? 0} / ${joueurs.length}`;
+
+    gameStatus.textContent =
+      (state.admin_started ? "Phase de vote active" : "Vote fermé")
+      + " — " +
+      (state.reveal_results ? "résultats révélés" : "résultats cachés");
+
+    adminFlags.textContent =
+      `Admin : ${state.admin_started ? "phase ouverte" : "en attente"} — ` +
+      `${state.reveal_results ? "résultats révélés" : "résultats cachés"}` +
+      ` — all_voted: ${state.all_voted ? "oui" : "non"}`;
+
+    // Grille
+    grid.innerHTML = "";
+    for (const j of joueurs) {
+      const r = roles[j] || { name: "?", icon: "" };
+      const isElim = eliminatedSet.has(j);
+      const isLover = coupleSet.has(j);
+      const isTop = state.reveal_results && topSet.has(j) && (state.max_votes || 0) > 0;
+
+      const card = document.createElement("div");
+      card.className = "card" +
+        (isElim ? " eliminated" : "") +
+        (isLover ? " lover" : "") +
+        (isTop ? " topvoted" : "");
+
+      const img = document.createElement("img");
+      img.className = "img";
+      img.alt = r.name || "";
+      img.src = r.icon ? `/static/${encodeURIComponent(r.icon)}` : "";
+      card.appendChild(img);
+
+      const title = document.createElement("div");
+      title.textContent = `Joueur ${j}`;
+      card.appendChild(title);
+
+      const roleLine = document.createElement("div");
+      roleLine.className = "small";
+      roleLine.innerHTML =
+        `${escapeHtml(r.name || "?")}` +
+        (isLover ? ` — <span class="lover-text">Amoureux</span>` : "") +
+        (isTop ? ` — <span class="top-voted">Top voté</span>` : "");
+      card.appendChild(roleLine);
+
+      const count = document.createElement("div");
+      count.className = "count";
+      count.textContent = `Votes : ${votes[j] ?? 0}`;
+      card.appendChild(count);
+
+      const status = document.createElement("div");
+      status.className = "small";
+      status.style.marginTop = "6px";
+
+      if (isElim) {
+        status.innerHTML = `<span class="ko">Éliminé</span>`;
+      } else if (votedSet.has(j)) {
+        status.innerHTML = `<span class="ok">A voté</span>`;
+      } else {
+        status.innerHTML = `<span class="ko">Pas encore</span>`;
+      }
+      card.appendChild(status);
+
+      grid.appendChild(card);
+    }
+
+    // Tableau
+    tableBody.innerHTML = "";
+    for (const j of joueurs) {
+      const tr = document.createElement("tr");
+
+      const tdJ = document.createElement("td");
+      tdJ.textContent = `Joueur ${j}`;
+      if (coupleSet.has(j)) tdJ.className = "lover-text";
+      if (state.reveal_results && topSet.has(j) && (state.max_votes || 0) > 0) tdJ.className = (tdJ.className ? tdJ.className + " " : "") + "top-voted";
+      tr.appendChild(tdJ);
+
+      const tdS = document.createElement("td");
+      if (eliminatedSet.has(j)) tdS.innerHTML = `<span class="ko">Éliminé</span>`;
+      else if (votedSet.has(j)) tdS.innerHTML = `<span class="ok">A voté</span>`;
+      else tdS.innerHTML = `<span class="ko">Pas encore</span>`;
+      tr.appendChild(tdS);
+
+      const tdV = document.createElement("td");
+      tdV.textContent = `${votes[j] ?? 0}`;
+      tr.appendChild(tdV);
+
+      tableBody.appendChild(tr);
+    }
+
+    // Optionnel: affichage nécro (si tu veux vraiment visible côté spectateur)
+    const msgs = state.necro_messages || [];
+    if (msgs.length) {
+      const revealed = msgs.filter(m => m.revealed);
+      const hidden = msgs.filter(m => !m.revealed);
+      necroBox.innerHTML =
+        `<strong>Nécro — messages</strong><br>` +
+        `<span class="small">Révélés: ${revealed.length} — Cachés: ${hidden.length}</span>`;
+    } else {
+      necroBox.innerHTML = "";
+    }
+  }
+
+  async function tick() {
+    try {
+      const res = await fetch(apiUrl, { cache: "no-store" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const state = await res.json();
+      render(state);
+    } catch (e) {
+      gameStatus.textContent = "Hors connexion / erreur API";
+    }
+  }
+
+  tick();
+  setInterval(tick, 700); // ajuste: 300-1000ms selon charge
+</script>
+</body>
+</html>
