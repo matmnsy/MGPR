@@ -62,7 +62,7 @@ base_roles = [
         "name": "Démon",
         "icon": "role_demon.png",
         "icon_list": "role_demon2.png",
-        "camp": "les Démons",
+        "camp": "Esprit Malfaiteur",
         "description": "Épris par la soif de sang, vous vous réunissez chaque nuit, avec les deux autres démons, afin de décider de la mort d’un membre du groupe. ",
     },
     {
@@ -111,7 +111,7 @@ base_roles = [
         "name": "Démon",
         "icon": "role_demon.png",
         "icon_list": "role_demon2.png",
-        "camp": "les Démons",
+        "camp": "Esprit Malfaiteur",
         "description": "Épris par la soif de sang, vous vous réunissez chaque nuit, avec les deux autres démons, afin de décider de la mort d’un membre du groupe. ",
     },
     {
