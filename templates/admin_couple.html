@@ -170,7 +170,7 @@
           {% if j in couple_players %}checked{% endif %}
           onchange="updateSelection(this)"
         >
-        <img src="/static/{{ roles[j]['icon'] }}" alt="Joueur {{ j }}">
+        <img src="/static/{{ roles[j]['icon_list'] }}" alt="Joueur {{ j }}">
         <div>Joueur {{ j }}</div>
       </label>
       {% endfor %}

@@ -108,7 +108,7 @@
         <div class="elim-card">
           <img
             class="elim-img"
-            src="/static/{% if is_tie %}role_cache.png{% else %}{{ roles[w]['icon'] }}{% endif %}"
+            src="/static/{% if is_tie %}role_cache2.png{% else %}{{ roles[w]['icon'] }}{% endif %}"
             alt=""
           >
 
@@ -136,7 +136,7 @@
           {% set partner = lover_map.get(j) if lover_map is defined else None %}
           
           <div class="elim-card">
-            <img class="elim-img" src="/static/{{ roles[j]['icon'] }}" alt="{{ roles[j]['name'] }}">
+            <img class="elim-img" src="/static/{{ roles[j]['_list'] }}" alt="{{ roles[j]['name'] }}">
             <div><strong>Joueur {{ j }}</strong></div>
             <div style="font-size:13px;color:#ddd">{{ roles[j]['name'] }}</div>
 

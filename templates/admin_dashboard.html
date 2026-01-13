@@ -246,7 +246,7 @@
           <div class="card
                {% if j in eliminated_players %} eliminated{% endif %}
                {% if j in couple_players %} lover{% endif %}">
-            <img class="img" src="/static/{{ roles[j]['icon'] }}" alt="{{ roles[j]['name'] }}">
+            <img class="img" src="/static/{{ roles[j]['icon_list'] }}" alt="{{ roles[j]['name'] }}">
             <div>Joueur {{ j }}</div>
             <div class="small">
               {{ roles[j]['name'] }}

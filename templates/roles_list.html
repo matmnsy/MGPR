@@ -73,11 +73,13 @@
       }
   
       .img {
-        width: 56px;
-        height: 56px;
-        border-radius: 50%;
-        object-fit: cover;
+        width: 60px;
+        height: 60px;
+        border-radius: 8px;   /* plus carte, moins avatar */
+        object-fit: contain; /* pas de découpe */
+        background: #111;
       }
+
   
       .name {
         font-weight: bold;
@@ -152,7 +154,7 @@
       {% for r in roles %}
         <div class="card">
           <div class="card-header">
-            <img class="img" src="/static/{{ r.icon }}" alt="{{ r.name }}">
+            <img class="img" src="/static/{{ r.icon_list }}" alt="{{ r.name }}">
             <div>
               <div class="name">{{ r.name }}</div>
               <div class="camp
