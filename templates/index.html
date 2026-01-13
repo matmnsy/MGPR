@@ -116,7 +116,7 @@
       {# 2. Joueur éliminé : on affiche maintenant son image de rôle #}
       {% elif j in eliminated_players %}
         <div class="box elim">
-          <img class="img" src="/static/{{ roles[j]['icon'] }}" alt="{{ roles[j]['name'] }}">
+          <img class="img" src="/static/{{ roles[j]['icon_list'] }}" alt="{{ roles[j]['name'] }}">
           <div>Joueur {{ j }}</div>
         </div>
 
@@ -124,7 +124,7 @@
       {% else %}
         <a class="box" href="{{ url_for('vote', votant=votant, cible=j) }}">
           <img class="img {% if lover_partner == j %}lover{% endif %}"
-               src="/static/role_cache.png"
+               src="/static/role_cache2.png"
                alt="Carte cachée">
           <div>Joueur {{ j }}</div>
         </a>
