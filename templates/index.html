@@ -109,7 +109,7 @@
       {# 1. Vous-même #}
       {% if j == votant %}
         <div class="box self">
-          <img class="img {% if lover_partner == j %}lover{% endif %}" src="/static/{{ roles[j]['icon'] }}" alt="Votre rôle">
+          <img class="img {% if lover_partner == j %}lover{% endif %}" src="/static/{{ roles[j]['icon_list'] }}" alt="Votre rôle">
           <div>Joueur {{ j }} (vous)</div>
         </div>
 
