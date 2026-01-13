@@ -1,137 +1,147 @@
 <!doctype html>
 <html lang="fr">
-  <head>
-    <meta charset="utf-8">
-    <title>Votre rôle</title>
-  
-    <!-- Responsive mobile -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-    <style>
-      body {
-        margin: 0;
-        padding: 0;
-        background: url("{{ url_for('static', filename='fond.png') }}") center/cover no-repeat;
-        font-family: Arial, sans-serif;
-        color: #fff;
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-sizing: border-box;
-      }
-  
-      .box {
-        background: rgba(0,0,0,0.75);
-        padding: 30px 40px;
-        border-radius: 14px;
-        text-align: center;
-        max-width: 480px;
-        width: 90vw;              /* s’adapte à la largeur de l’écran */
-        box-sizing: border-box;
-      }
-  
-      .img {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        object-fit: cover;
-        margin-bottom: 12px;
-      }
-  
-      h1 {
-        margin: 0 0 10px 0;
-        font-size: 1.8rem;
-      }
-  
-      p {
-        margin: 6px 0;
-      }
-  
-      a.btn {
-        display: inline-block;
-        margin-top: 14px;
-        padding: 8px 14px;
-        border-radius: 999px;
-        border: 1px solid rgba(255,255,255,0.6);
-        text-decoration: none;
-        color: #fff;
-        font-size: 13px;
-        background: rgba(0,0,0,0.3);
-        white-space: nowrap;
-      }
-  
-      .camp-village { color: #4caf50; }
-      .camp-demons { color: #e53935; }
-  
-      .roles-link {
-        position: fixed;
-        top: 12px;
-        left: 12px;
-        background: rgba(0,0,0,0.7);
-        padding: 6px 10px;
-        border-radius: 999px;
-        font-size: 13px;
-        text-decoration: none;
-        color: #fff;
-        border: 1px solid rgba(255,255,255,0.4);
-        z-index: 1000;
-      }
-  
-      .lover-border {
-        box-shadow: 0 0 12px #ff70d7;
-        border: 3px solid #ff70d7;
-      }
-  
-      .btn-necro {
-        display: inline-block;
-        margin-top: 10px;
-        padding: 6px 12px;
-        border-radius: 999px;
-        border: 1px solid #ff70d7;
-        color: #ff70d7;
-        text-decoration: none;
-        font-size: 13px;
-        background: rgba(0,0,0,0.2);
-        white-space: nowrap;
-      }
-  
-      /* Adaptation petits écrans */
-      @media (max-width: 600px) {
-        .box {
-          padding: 22px 18px;
-        }
-  
-        .img {
-          width: 96px;
-          height: 96px;
-        }
-  
-        h1 {
-          font-size: 1.5rem;
-        }
-  
-        a.btn,
-        .btn-necro {
-          display: block;
-          width: 100%;
-          max-width: 260px;
-          margin-left: auto;
-          margin-right: auto;
-        }
-  
-        .roles-link {
-          font-size: 11px;
-          padding: 4px 8px;
-        }
-      }
-    </style>
-  </head>  
-<body>
+<head>
+  <meta charset="utf-8">
+  <title>Votre rôle</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
+  <style>
+    :root{
+      --card: rgba(0,0,0,0.75);
+      --lover:#ff70d7;
+      --village:#4caf50;
+      --demons:#e53935;
+    }
+
+    body{
+      margin:0;
+      padding:0;
+      background: url("{{ url_for('static', filename='fond.png') }}") center/cover no-repeat;
+      font-family: Arial, sans-serif;
+      color:#fff;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-sizing:border-box;
+    }
+
+    .roles-link{
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      background: rgba(0,0,0,0.7);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+      text-decoration: none;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.4);
+      z-index: 1000;
+    }
+
+    .box{
+      background: var(--card);
+      padding: 18px 18px 16px;
+      border-radius: 14px;
+      text-align:center;
+      width: min(520px, 92vw);
+      box-sizing:border-box;
+    }
+
+    h1{
+      margin: 0 0 10px 0;
+      font-size: 1.5rem;
+      letter-spacing: 0.2px;
+    }
+
+    /* Affichage "carte entière" */
+    .role-card{
+      width: min(420px, 82vw);
+      height: auto;
+      border-radius: 12px;
+      display:block;
+      margin: 10px auto 12px;
+      background:#111;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.35);
+    }
+
+    .role-card.lover-border{
+      box-shadow: 0 0 18px var(--lover), 0 10px 26px rgba(0,0,0,0.35);
+      outline: 3px solid var(--lover);
+      outline-offset: 0;
+    }
+
+    .line{
+      margin: 8px 0;
+      font-size: 14px;
+      color: #eee;
+    }
+
+    .camp-village{ color: var(--village); font-weight:700; }
+    .camp-demons{ color: var(--demons); font-weight:700; }
+
+    .lover-text{
+      margin-top: 6px;
+      color: var(--lover);
+      font-weight: 700;
+    }
+
+    a.btn{
+      display:inline-block;
+      margin-top: 12px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.6);
+      text-decoration:none;
+      color:#fff;
+      font-size: 13px;
+      background: rgba(0,0,0,0.3);
+      white-space:nowrap;
+    }
+
+    .btn-necro{
+      display:inline-block;
+      margin-top: 10px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--lover);
+      color: var(--lover);
+      text-decoration:none;
+      font-size: 13px;
+      background: rgba(0,0,0,0.2);
+      white-space: nowrap;
+    }
+
+    .hint{
+      margin-top: 8px;
+      font-size: 13px;
+      color:#ddd;
+    }
+
+    @media (max-width: 600px){
+      .box{ padding: 16px 14px 14px; }
+      h1{ font-size: 1.35rem; }
+      .role-card{ width: min(360px, 86vw); border-radius: 10px; }
+      a.btn, .btn-necro{
+        display:block;
+        width:100%;
+        max-width: 320px;
+        margin-left:auto;
+        margin-right:auto;
+      }
+      .roles-link{
+        font-size: 11px;
+        padding: 4px 8px;
+      }
+    }
+  </style>
+</head>
+
+<body>
   <a class="roles-link" href="{{ url_for('roles_list') }}">? Rôles</a>
 
-  <!-- Métadonnées pour le script JS (pas de Jinja dans le JS) -->
+  <!-- Métadonnées pour le script JS -->
   <div id="role-meta"
        data-votant="{{ votant }}"
        data-initial-admin-started="{% if admin_started %}1{% else %}0{% endif %}">
@@ -140,33 +150,37 @@
   <div class="box">
     <h1>Votre rôle</h1>
 
+    <!-- IMPORTANT: on affiche la carte entière -->
     <img
-      class="img {% if lover_partner %}lover-border{% endif %}"
+      class="role-card {% if lover_partner %}lover-border{% endif %}"
       src="/static/{{ role.icon }}"
-      alt="Votre rôle"
+      alt="{{ role.name }}"
     >
 
-    <p>Vous êtes : <strong>{{ role.name }}</strong></p>
+    <div class="line">
+      Vous êtes : <strong>{{ role.name }}</strong>
+    </div>
 
     {% if lover_partner %}
-      <p style="margin-top:4px;color:#ff70d7;font-weight:bold;">
+      <div class="lover-text">
         Vous êtes amoureux de <strong>Joueur {{ lover_partner }}</strong>.
-      </p>
+      </div>
     {% endif %}
 
-    <p>Gardez votre rôle secret, ne montrez pas cet écran aux autres joueurs.</p>
-
-    <p>Vous devez gagner avec
+    <div class="line">
+      Vous devez gagner avec
       {% if role.camp == "le Village" %}
-        <strong class="camp-village">{{ role.camp }}</strong>
+        <span class="camp-village">{{ role.camp }}</span>
       {% elif role.camp == "les Démons" %}
-        <strong class="camp-demons">{{ role.camp }}</strong>
+        <span class="camp-demons">{{ role.camp }}</span>
       {% else %}
         <strong>{{ role.camp }}</strong>
       {% endif %}
-    </p>
+    </div>
 
-    <p><strong>Description :</strong> {{ role.description }}</p>
+    <div class="hint">
+      Gardez votre rôle secret, ne montrez pas cet écran aux autres joueurs.
+    </div>
 
     {% if role.name == "Nécromancien" %}
       <a class="btn-necro" href="{{ url_for('necro_chat', joueur=votant) }}">
@@ -184,42 +198,32 @@
 
       const metaEl = document.getElementById('role-meta');
       const votant = metaEl.dataset.votant;
-      const initialAdminStarted = parseInt(metaEl.dataset.initialAdminStarted, 10); // 0 ou 1
+      const initialAdminStarted = parseInt(metaEl.dataset.initialAdminStarted, 10);
 
       function pollStatus() {
         fetch('/api/status?votant=' + encodeURIComponent(votant))
           .then(r => r.json())
           .then(data => {
-
-            // Joueur éliminé
             if (data.eliminated) {
               window.location.href = "{{ url_for('vote_page', votant='__V__') }}".replace('__V__', votant);
               return;
             }
-
-            // Résultats révélés
             if (data.reveal) {
               window.location.href = "{{ url_for('vote_page', votant='__V__') }}".replace('__V__', votant);
               return;
             }
-
-            // Début du vote OU nouvelle partie (changement de admin_started)
             const currentAdminStarted = data.admin_started ? 1 : 0;
             if (currentAdminStarted !== initialAdminStarted) {
               window.location.href = "{{ url_for('vote_page', votant='__V__') }}".replace('__V__', votant);
               return;
             }
-
             setTimeout(pollStatus, interval);
           })
-          .catch(() => {
-            setTimeout(pollStatus, interval);
-          });
+          .catch(() => setTimeout(pollStatus, interval));
       }
 
       pollStatus();
     })();
   </script>
-
 </body>
 </html>
