@@ -249,7 +249,7 @@
     // Grille
     grid.innerHTML = "";
     for (const j of joueurs) {
-      const r = roles[j] || { name: "?", icon: "" };
+      const r = roles[j] || { name: "?", icon_list: "" };
       const isElim = eliminatedSet.has(j);
       const isLover = coupleSet.has(j);
       const isTop = state.reveal_results && topSet.has(j) && (state.max_votes || 0) > 0;
@@ -263,7 +263,7 @@
       const img = document.createElement("img");
       img.className = "img";
       img.alt = r.name || "";
-      img.src = r.icon ? `/static/${encodeURIComponent(r.icon)}` : "";
+      img.src = r.icon_list ? `/static/${encodeURIComponent(r.icon_list)}` : "";
       card.appendChild(img);
 
       const title = document.createElement("div");
