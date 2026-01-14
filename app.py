@@ -452,19 +452,6 @@ def admin_result():
         joueur_vote_pour=joueur_vote_pour
     )
 
-@app.route("/admin/reset_votes")
-@admin_required
-def admin_reset_votes():
-    """
-    Reset des votes uniquement (en cas d'égalité, erreur, etc.).
-    On garde les éliminés, les rôles et la phase de vote reste ouverte.
-    """
-    global admin_started
-    reset_votes_only()
-    # On laisse admin_started tel quel : si la phase était ouverte,
-    # elle reste ouverte et les joueurs peuvent revoter immédiatement.
-    return redirect(url_for("admin_dashboard"))
-
 
 @app.route("/admin", methods=["GET", "POST"])
 def admin_login():
