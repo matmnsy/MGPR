@@ -54,7 +54,9 @@
       flex-wrap: wrap;
       gap: 8px;
       align-items: center;
+      width: 100%;          /* <-- AJOUT IMPORTANT */
     }
+
 
     .btn {
       background: var(--accent);
@@ -169,17 +171,17 @@
       .footer { flex-direction: column; text-align: center; }
     }
     .btn-new-game {
-      margin-left: auto;   /* pousse le bouton à droite */
+      margin-left: auto;
     }
 
     .btn-danger {
       background: #c0392b;
-      border: 1px solid rgba(255,255,255,0.15);
     }
 
     .btn-danger:hover {
       background: #e74c3c;
     }
+
 
   </style>
 </head>
@@ -201,43 +203,33 @@
       {% else %}
         <span class="status">Phase de vote active</span>
       {% endif %}
-
+    
       <a class="btn {% if not all_voted %}secondary{% endif %}"
          href="{{ url_for('admin_reveal') }}"
          {% if not all_voted %}onclick="return confirm('Tous les joueurs n’ont pas encore voté. Continuer ?');"{% endif %}>
          Reveal votes
       </a>
-
+    
       <a class="btn secondary"
          href="{{ url_for('admin_next_night') }}"
          onclick="return confirm('Prochaine nuit : réinitialiser les votes, mais garder les joueurs éliminés ?');">
          Prochaine nuit
       </a>
-
+    
+      <a class="btn secondary" href="{{ url_for('admin_esprit_farceur') }}">Esprit farceur</a>
+      <a class="btn secondary" href="{{ url_for('admin_couple') }}">Couple maudit</a>
+      <a class="btn secondary" href="{{ url_for('admin_necro_chat') }}">Nécro – messages</a>
+      <a class="btn secondary" href="{{ url_for('admin_logout') }}">Logout</a>
+    
+      <!-- TOUJOURS EN DERNIER -->
       <a class="btn btn-danger btn-new-game"
-          href="{{ url_for('reset') }}"
-          onclick="return confirm('Nouvelle partie : tout réinitialiser et redistribuer les rôles ?');">
-          Nouvelle partie
+         href="{{ url_for('reset') }}"
+         onclick="return confirm('Nouvelle partie : tout réinitialiser et redistribuer les rôles ?');">
+         Nouvelle partie
       </a>
-   
-
-      <a class="btn secondary" href="{{ url_for('admin_esprit_farceur') }}">
-        Esprit farceur
-      </a>
-
-      <a class="btn secondary" href="{{ url_for('admin_couple') }}">
-        Couple maudit
-      </a>
-
-      <a class="btn secondary" href="{{ url_for('admin_necro_chat') }}">
-        Nécro – messages
-      </a>
-
-      <a class="btn secondary" href="{{ url_for('admin_logout') }}">
-        Logout
-      </a>
-
+    
     </div>
+    
   </div>
 
   <!-- GRID + TABLE -->
