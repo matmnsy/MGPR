@@ -144,6 +144,34 @@
 
   <a class="top-link" href="{{ previous_url }}">← Retour</a>
 
+  <div id="msg-btn" style="
+  position:fixed;
+  bottom:16px;
+  right:16px;
+  width:52px;
+  height:52px;
+  border-radius:50%;
+  background:#222;
+  border:1px solid #555;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  z-index:1000;
+">
+  💬
+  <span id="msg-dot" style="
+    position:absolute;
+    top:6px;
+    right:6px;
+    width:10px;
+    height:10px;
+    background:red;
+    border-radius:50%;
+    display:none;
+  "></span>
+</div>
+
   <div class="wrap">
     <h1>Liste des rôles</h1>
     <p style="font-size:13px;opacity:0.8;margin-bottom:16px">

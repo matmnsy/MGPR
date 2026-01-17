@@ -47,6 +47,8 @@ def api_spectator_state():
 # Joueurs (1 à 12)
 joueurs = [str(i) for i in range(1, 13)]
 exorcised_player = None
+admin_messages = {j: [] for j in joueurs}
+admin_msg_next_id = 1
 
 # === LISTE DES RÔLES DE BASE ===
 base_roles = [
@@ -287,6 +289,52 @@ def vote_page(votant):
         roles=roles,
         lover_partner=lover_partner,
     )
+
+@app.route("/api/messages/<joueur>")
+def api_messages(joueur):
+    if joueur not in joueurs:
+        abort(404)
+
+    msgs = admin_messages.get(joueur, [])
+    unread = any(not m["read"] for m in msgs)
+
+    return jsonify({
+        "messages": msgs,
+        "has_unread": unread
+    })
+
+@app.route("/api/messages/<joueur>/read", methods=["POST"])
+def api_messages_read(joueur):
+    if joueur not in joueurs:
+        abort(404)
+
+    for m in admin_messages.get(joueur, []):
+        m["read"] = True
+
+    return jsonify({"ok": True})
+
+@app.route("/admin/message", methods=["GET", "POST"])
+@admin_required
+def admin_message():
+    global admin_msg_next_id
+
+    if request.method == "POST":
+        joueur = request.form.get("joueur")
+        text = request.form.get("message", "").strip()
+
+        if joueur in joueurs and text:
+            admin_messages[joueur].append({
+                "id": admin_msg_next_id,
+                "text": text,
+                "read": False,
+            })
+            admin_msg_next_id += 1
+
+        return redirect(url_for("admin_dashboard"))
+
+    return render_template("admin_message.html", joueurs=joueurs)
+
+
 
 
 @app.route("/vote/<votant>/<cible>")
