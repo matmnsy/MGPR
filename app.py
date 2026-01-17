@@ -222,27 +222,24 @@ def vote_page(votant):
         return render_template("eliminated.html", votant=votant, already_sent=already_sent)
 
     if not admin_started:
-    # Rôles présents dans la partie + état éliminé (au moins 1 joueur de ce rôle éliminé)
-        roles_state = {}
+        # 1 entrée par joueur (donc 12 icônes, dont 3 démons)
+        roles_state_list = []
         for j in joueurs:
             r = roles.get(j)
             if not r:
                 continue
-            name = r["name"]
-            if name not in roles_state:
-                roles_state[name] = {
-                    "icon_list": r.get("icon_list") or r.get("icon"),
-                    "eliminated": False,
-                }
-            if j in eliminated_players:
-                roles_state[name]["eliminated"] = True
+            roles_state_list.append({
+                "player": j,
+                "name": r["name"],
+                "icon_list": r.get("icon_list") or r.get("icon"),
+                "eliminated": (j in eliminated_players),
+            })
 
-        # liste stable pour le template
-        roles_state_list = [
-            {"name": name, **info} for name, info in roles_state.items()
-        ]
+        # ordre aléatoire à chaque rendu
+        random.shuffle(roles_state_list)
 
         return render_template("welcome.html", votant=votant, roles_state=roles_state_list)
+
 
 
     if votant in joueurs_ayant_vote:
