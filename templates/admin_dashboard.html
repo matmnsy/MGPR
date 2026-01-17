@@ -7,6 +7,7 @@
 
   <style>
     :root {
+      --bg:#111;
       --card:rgba(0,0,0,0.6);
       --accent:#2aa;
       --ok:#8f8;
@@ -23,28 +24,37 @@
         url("{{ url_for('static', filename='fond.png') }}") center/cover no-repeat;
       color: #fff;
       padding: 20px;
+      box-sizing: border-box;
       min-height: 100vh;
     }
 
-    .wrap { max-width: 1100px; margin: 0 auto; }
+    .wrap {
+      max-width: 1100px;
+      width: 95vw;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
 
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 12px;
-      flex-wrap: wrap;
       margin-bottom: 16px;
+      flex-wrap: wrap;
     }
 
-    .title { font-size: 20px; font-weight: 700; }
+    .title {
+      font-size: 20px;
+      font-weight: 700;
+    }
 
     .controls {
       display: flex;
-      gap: 8px;
       flex-wrap: wrap;
+      gap: 8px;
       align-items: center;
-      width: 100%;
+      width: 100%; /* important pour pousser "Nouvelle partie" à droite */
     }
 
     .btn {
@@ -54,29 +64,27 @@
       border-radius: 8px;
       text-decoration: none;
       font-weight: 600;
+      display: inline-block;
       white-space: nowrap;
     }
 
     .btn.secondary {
       background: transparent;
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-
-    .btn-danger {
-      background: #c0392b;
-      margin-left: auto;
+      border: 1px solid rgba(255,255,255,0.06);
     }
 
     .status {
       background: var(--card);
       padding: 10px;
       border-radius: 8px;
+      font-size: 14px;
     }
 
     .grid-and-table {
       display: grid;
       grid-template-columns: 1fr 360px;
       gap: 18px;
+      margin-top: 16px;
     }
 
     .grid {
@@ -89,124 +97,259 @@
       background: var(--card);
       padding: 12px;
       border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       text-align: center;
+      box-sizing: border-box;
     }
 
     .card.eliminated { opacity: 0.4; filter: grayscale(1); }
-    .card.lover { box-shadow: 0 0 10px var(--lover); }
+    .card.lover { box-shadow: 0 0 12px var(--lover); border: 2px solid var(--lover); }
 
     .img {
       width: 72px;
       height: 72px;
       border-radius: 50%;
-      margin-bottom: 6px;
+      object-fit: cover;
+      background: #333;
+      margin-bottom: 8px;
+    }
+
+    .small {
+      font-size: 13px;
+      color: #ddd;
     }
 
     .count {
+      margin-top: 8px;
       background: rgba(255,255,255,0.06);
-      padding: 6px;
-      border-radius: 8px;
-      margin-top: 6px;
+      padding: 6px 8px;
+      border-radius: 10px;
     }
 
-    table { width: 100%; border-collapse: collapse; }
-    th, td { padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .table-wrapper { width: 100%; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 500px; }
+
+    th, td {
+      padding: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      text-align: left;
+      white-space: nowrap;
+    }
+
     .ok { color: var(--ok); font-weight: 700; }
     .ko { color: var(--nok); }
+    .lover-text { color: var(--lover); font-weight: 700; }
     .top-voted { color: var(--top); font-weight: 700; }
+
+    .footer {
+      margin-top: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* Responsive tablette */
+    @media (max-width: 900px) {
+      .grid-and-table { grid-template-columns: 1fr; }
+      .grid { grid-template-columns: repeat(3,1fr); }
+    }
+
+    /* Responsive mobile */
+    @media (max-width: 600px) {
+      body { padding: 12px; }
+      .title { font-size: 18px; }
+      .controls .btn { padding: 7px 10px; font-size: 13px; }
+      .grid { grid-template-columns: repeat(2,1fr); gap: 10px; }
+      .img { width: 64px; height: 64px; }
+      th, td { padding: 6px; font-size: 12px; }
+      .status { font-size: 13px; }
+      .footer { flex-direction: column; text-align: center; }
+    }
+
+    .btn-new-game { margin-left: auto; }
+    .btn-danger { background: #c0392b; }
+    .btn-danger:hover { background: #e74c3c; }
   </style>
 </head>
 
 <body>
 <div class="wrap">
 
-<!-- HEADER -->
-<div class="header">
-  <div>
-    <div class="title">Admin — Dashboard</div>
-    <div class="small" id="voters-count">
-      Votants : {{ total_voters }} / {{ joueurs|length }}
+  <!-- HEADER -->
+  <div class="header">
+    <div>
+      <div class="title">Admin — Dashboard</div>
+      <div class="small" id="voters-count">Votants : {{ total_voters }} / {{ joueurs|length }}</div>
     </div>
-  </div>
 
-  <div class="controls">
-    {% if not admin_started %}
-      <a class="btn" href="{{ url_for('admin_start') }}">Start voting</a>
-    {% else %}
-      <span class="status">Phase de vote active</span>
-    {% endif %}
+    <div class="controls">
 
-    <a class="btn {% if not all_voted %}secondary{% endif %}"
-       href="{{ url_for('admin_reveal') }}">
-       Reveal votes
-    </a>
-
-    <a class="btn secondary" href="{{ url_for('admin_next_night') }}">Prochaine nuit</a>
-    <a class="btn secondary" href="{{ url_for('admin_logout') }}">Logout</a>
-
-    <a class="btn btn-danger"
-       href="{{ url_for('reset') }}"
-       onclick="return confirm('Nouvelle partie ?');">
-       Nouvelle partie
-    </a>
-  </div>
-</div>
-
-<!-- GRID + TABLE -->
-<div class="grid-and-table">
-
-<!-- GRID -->
-<div class="grid">
-{% for j in joueurs %}
-  <div id="card-{{ j }}" class="card
-       {% if j in eliminated_players %}eliminated{% endif %}
-       {% if j in couple_players %}lover{% endif %}">
-    <img class="img" src="/static/{{ roles[j]['icon_list'] }}">
-    <div>Joueur {{ j }}</div>
-    <div class="count" id="votes-card-{{ j }}">Votes : {{ votes[j] }}</div>
-    <div id="status-card-{{ j }}">
-      {% if j in eliminated_players %}
-        <span class="ko">Éliminé</span>
-      {% elif j in joueurs_ayant_vote %}
-        <span class="ok">A voté</span>
+      {% if not admin_started %}
+        <a class="btn" href="{{ url_for('admin_start') }}">Start voting</a>
       {% else %}
-        <span class="ko">Pas encore</span>
+        <span class="status">Phase de vote active</span>
       {% endif %}
+
+      <a class="btn {% if not all_voted %}secondary{% endif %}"
+         href="{{ url_for('admin_reveal') }}"
+         {% if not all_voted %}onclick="return confirm('Tous les joueurs n’ont pas encore voté. Continuer ?');"{% endif %}>
+         Reveal votes
+      </a>
+
+      <a class="btn secondary"
+         href="{{ url_for('admin_next_night') }}"
+         onclick="return confirm('Prochaine nuit : réinitialiser les votes, mais garder les joueurs éliminés ?');">
+         Prochaine nuit
+      </a>
+
+      <a class="btn secondary" href="{{ url_for('admin_esprit_farceur') }}">Esprit farceur</a>
+      <a class="btn secondary" href="{{ url_for('admin_couple') }}">Couple maudit</a>
+      <a class="btn secondary" href="{{ url_for('admin_necro_chat') }}">Nécro – messages</a>
+      <a class="btn secondary" href="{{ url_for('admin_logout') }}">Logout</a>
+
+      <!-- TOUJOURS EN DERNIER -->
+      <a class="btn btn-danger btn-new-game"
+         href="{{ url_for('reset') }}"
+         onclick="return confirm('Nouvelle partie : tout réinitialiser et redistribuer les rôles ?');">
+         Nouvelle partie
+      </a>
+
     </div>
   </div>
-{% endfor %}
+
+  <!-- GRID + TABLE -->
+  <div class="grid-and-table">
+
+    <!-- GRID -->
+    <div>
+      <div style="margin-bottom:10px;color:#ddd">
+        Grille (aperçu admin) — rôles visibles uniquement ici
+      </div>
+
+      <div class="grid">
+        {% for j in joueurs %}
+          <div id="card-{{ j }}" class="card
+               {% if j in eliminated_players %} eliminated{% endif %}
+               {% if j in couple_players %} lover{% endif %}">
+            <img class="img" src="/static/{{ roles[j]['icon_list'] }}" alt="{{ roles[j]['name'] }}">
+            <div>Joueur {{ j }}</div>
+            <div class="small">
+              {{ roles[j]['name'] }}
+              {% if j in couple_players %}
+                — <span class="lover-text">Amoureux</span>
+              {% endif %}
+            </div>
+            <div class="count" id="votes-card-{{ j }}">Votes : {{ votes[j] }}</div>
+
+            <div class="small" id="status-card-{{ j }}" style="margin-top:6px">
+              {% if j in eliminated_players %}
+                <span class="ko">Éliminé</span>
+              {% else %}
+                {% if j in joueurs_ayant_vote %}
+                  <span class="ok">A voté</span>
+                {% else %}
+                  <span class="ko">Pas encore</span>
+                {% endif %}
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="card">
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <strong>Suivi des votants</strong>
+        <span class="small">{{ total_voters }} / {{ joueurs|length }}</span>
+      </div>
+
+      <table>
+        <thead>
+        <tr>
+          <th>Joueur</th>
+          <th>Rôle</th>
+          <th>Statut</th>
+          <th>Votes</th>
+          <th>Action</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for j, a in status %}
+          <tr id="row-{{ j }}">
+            <td id="name-{{ j }}" class="
+              {% if j in couple_players %}lover-text{% endif %}
+              {% if reveal_results and j in top_voted_players and max_votes > 0 %} top-voted{% endif %}
+            ">
+              Joueur {{ j }}
+            </td>
+
+            <td>{{ roles[j]['name'] }}</td>
+
+            <td id="status-row-{{ j }}">
+              {% if j in eliminated_players %}
+                <span class="ko">Éliminé</span>
+              {% else %}
+                {% if a %}
+                  <span class="ok">A voté</span>
+                {% else %}
+                  <span class="ko">Pas encore</span>
+                {% endif %}
+              {% endif %}
+            </td>
+
+            <td id="votes-row-{{ j }}">{{ votes[j] }}</td>
+
+            <td>
+              {% if j in eliminated_players %}
+                —
+              {% else %}
+                <a class="btn secondary"
+                   href="{{ url_for('admin_eliminate', joueur=j) }}"
+                   onclick="return confirm('Éliminer ce joueur ?');">
+                  Éliminer
+                </a>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+
+      <div style="margin-top:12px;font-size:13px;color:#ccc">
+        <strong>Statut admin :</strong>
+        {% if admin_started %} phase ouverte {% else %} en attente {% endif %} —
+        {% if reveal_results %} résultats révélés {% else %} résultats cachés {% endif %}
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="small">
+      Conseil : "Start voting", puis "Reveal votes".<br>
+      "Prochaine nuit" garde les éliminés.
+      "Nouvelle partie" relance tout avec de nouveaux rôles.
+    </div>
+
+    <div>
+      <a class="btn" href="{{ url_for('admin_result') }}"
+         {% if not all_voted %}style="opacity:0.5;pointer-events:none;"{% endif %}>
+        Voir résultat
+      </a>
+    </div>
+  </div>
+
 </div>
 
-<!-- TABLE -->
-<div class="card">
-<table>
-<thead>
-<tr><th>Joueur</th><th>Statut</th><th>Votes</th></tr>
-</thead>
-<tbody>
-{% for j, a in status %}
-<tr id="row-{{ j }}">
-  <td id="name-{{ j }}">{{ j }}</td>
-  <td id="status-row-{{ j }}">
-    {% if j in eliminated_players %}
-      <span class="ko">Éliminé</span>
-    {% elif a %}
-      <span class="ok">A voté</span>
-    {% else %}
-      <span class="ko">Pas encore</span>
-    {% endif %}
-  </td>
-  <td id="votes-row-{{ j }}">{{ votes[j] }}</td>
-</tr>
-{% endfor %}
-</tbody>
-</table>
-</div>
-
-</div>
-</div>
-
-<!-- LIVE UPDATE SCRIPT -->
+<!-- LIVE UPDATE (nécessite /api/admin_state côté Flask) -->
 <script>
 (function pollAdmin(){
   const interval = 1200;
@@ -215,35 +358,56 @@
     .then(r => r.json())
     .then(data => {
 
-      document.getElementById('voters-count').textContent =
-        `Votants : ${data.total_voters} / {{ joueurs|length }}`;
+      // compteur global
+      const votersCount = document.getElementById('voters-count');
+      if (votersCount) {
+        votersCount.textContent = `Votants : ${data.total_voters} / {{ joueurs|length }}`;
+      }
 
-      const voted = new Set(data.joueurs_ayant_vote.map(String));
-      const eliminated = new Set(data.eliminated_players.map(String));
-      const top = new Set(data.top_voted_players.map(String));
+      const voted = new Set((data.joueurs_ayant_vote || []).map(String));
+      const eliminated = new Set((data.eliminated_players || []).map(String));
+      const top = new Set((data.top_voted_players || []).map(String));
 
-      Object.entries(data.votes).forEach(([j,v]) => {
+      Object.entries(data.votes || {}).forEach(([j, v]) => {
         j = String(j);
 
-        document.getElementById(`votes-card-${j}`).textContent = `Votes : ${v}`;
-        document.getElementById(`votes-row-${j}`).textContent = v;
+        // GRID votes
+        const vc = document.getElementById(`votes-card-${j}`);
+        if (vc) vc.textContent = `Votes : ${v}`;
 
-        const status = eliminated.has(j)
-          ? '<span class="ko">Éliminé</span>'
-          : voted.has(j)
-            ? '<span class="ok">A voté</span>'
-            : '<span class="ko">Pas encore</span>';
+        // GRID statut
+        const sc = document.getElementById(`status-card-${j}`);
+        if (sc) {
+          if (eliminated.has(j)) sc.innerHTML = '<span class="ko">Éliminé</span>';
+          else if (voted.has(j)) sc.innerHTML = '<span class="ok">A voté</span>';
+          else sc.innerHTML = '<span class="ko">Pas encore</span>';
+        }
 
-        document.getElementById(`status-card-${j}`).innerHTML = status;
-        document.getElementById(`status-row-${j}`).innerHTML = status;
+        // GRID classe eliminated
+        const card = document.getElementById(`card-${j}`);
+        if (card) card.classList.toggle('eliminated', eliminated.has(j));
 
-        document.getElementById(`card-${j}`)
-          .classList.toggle('eliminated', eliminated.has(j));
+        // TABLE votes
+        const vr = document.getElementById(`votes-row-${j}`);
+        if (vr) vr.textContent = v;
 
-        document.getElementById(`name-${j}`)
-          .classList.toggle('top-voted',
-            data.reveal_results && data.max_votes > 0 && top.has(j)
-          );
+        // TABLE statut
+        const sr = document.getElementById(`status-row-${j}`);
+        if (sr) {
+          if (eliminated.has(j)) sr.innerHTML = '<span class="ko">Éliminé</span>';
+          else if (voted.has(j)) sr.innerHTML = '<span class="ok">A voté</span>';
+          else sr.innerHTML = '<span class="ko">Pas encore</span>';
+        }
+
+        // TABLE top-voted (uniquement après reveal)
+        const nameCell = document.getElementById(`name-${j}`);
+        if (nameCell) {
+          if (data.reveal_results && data.max_votes > 0 && top.has(j)) {
+            nameCell.classList.add('top-voted');
+          } else {
+            nameCell.classList.remove('top-voted');
+          }
+        }
       });
 
       setTimeout(pollAdmin, interval);
