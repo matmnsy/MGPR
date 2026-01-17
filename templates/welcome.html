@@ -82,7 +82,7 @@
           padding: 4px 8px;
         }
       }
-      .roles-strip {
+      .roles-strip{
         position: fixed;
         top: 12px;
         left: 50%;
@@ -95,30 +95,57 @@
         border-radius: 999px;
         z-index: 1000;
         backdrop-filter: blur(6px);
+
+        max-width: calc(100vw - 24px);
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
       }
 
-      .role-chip {
-        width: 44px;
-        height: 44px;
+      .role-item{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 52px;
+      }
+
+      .role-chip{
+        width: 48px;              /* plus grand */
+        height: 48px;
         border-radius: 999px;
         overflow: hidden;
         border: 1px solid rgba(255,255,255,0.15);
+        background: rgba(0,0,0,0.25);
         display: inline-flex;
         align-items: center;
         justify-content: center;
       }
 
-      .role-chip img {
+      .role-chip img{
         width: 100%;
         height: 100%;
         object-fit: cover;
         display: block;
       }
 
-      .role-chip.eliminated img {
+      /* ÉLIMINÉ : case plus sombre + icône grisée */
+      .role-chip.eliminated{
+        background: rgba(0,0,0,0.85);
+        border-color: rgba(255,85,85,0.65);
+      }
+
+      .role-chip.eliminated img{
         filter: grayscale(1);
         opacity: 0.35;
       }
+
+      .dead-label{
+        margin-top: 4px;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.5px;
+        color: #ff5555;
+      }
+
 
     </style>
   </head>  
@@ -129,12 +156,16 @@
   {% if roles_state %}
   <div class="roles-strip" aria-label="Rôles dans la partie">
     {% for r in roles_state %}
-      <div class="role-chip {% if r.eliminated %}eliminated{% endif %}" title="{{ r.name }}">
-        <img src="/static/{{ r.icon_list }}" alt="{{ r.name }}">
+      <div class="role-item" data-player="{{ r.player }}">
+        <div class="role-chip {% if r.eliminated %}eliminated{% endif %}" title="{{ r.name }}">
+          <img src="/static/{{ r.icon_list }}" alt="{{ r.name }}">
+        </div>
+        <div class="dead-label" {% if not r.eliminated %}style="display:none"{% endif %}>MORT</div>
       </div>
     {% endfor %}
   </div>
   {% endif %}
+
 
 
   <div class="box">
@@ -143,28 +174,49 @@
     <a class="btn-role" href="{{ url_for('view_role', votant=votant) }}">Voir mon rôle</a>
   </div>
 
-<script>
-(function pollStatus(){
-  const interval = 1500;
-  fetch('/api/status?votant={{ votant }}')
-    .then(r => r.json())
-    .then(data => {
-      if (data.eliminated) {
-        window.location.href = window.location.pathname;
-        return;
-      }
-
-      if (data.admin_started) {
-        window.location.href = window.location.pathname;
-        return;
-      }
-
-      setTimeout(pollStatus, interval);
-    })
-    .catch(err => {
-      setTimeout(pollStatus, interval);
-    });
-})();
-</script>
+  <script>
+    (function poll(){
+      const interval = 1500;
+    
+      fetch('/api/spectator_state')
+        .then(r => r.json())
+        .then(data => {
+          const eliminatedSet = new Set((data.eliminated_players || []).map(String));
+          const me = String("{{ votant }}");
+    
+          // Si je suis éliminé => recharger /vote/<moi> (ça affichera eliminated.html)
+          if (eliminatedSet.has(me)) {
+            window.location.href = "{{ url_for('vote_page', votant=votant) }}";
+            return;
+          }
+    
+          // Si l'admin démarre le vote => aller sur /vote/<moi> (page de vote)
+          if (data.admin_started) {
+            window.location.href = "{{ url_for('vote_page', votant=votant) }}";
+            return;
+          }
+    
+          // Mise à jour live des icônes (griser + afficher MORT)
+          document.querySelectorAll('.role-item').forEach(item => {
+            const player = item.getAttribute('data-player');
+            const chip = item.querySelector('.role-chip');
+            const label = item.querySelector('.dead-label');
+            const dead = eliminatedSet.has(String(player));
+    
+            if (dead) {
+              chip.classList.add('eliminated');
+              if (label) label.style.display = 'block';
+            } else {
+              chip.classList.remove('eliminated');
+              if (label) label.style.display = 'none';
+            }
+          });
+    
+          setTimeout(poll, interval);
+        })
+        .catch(() => setTimeout(poll, interval));
+    })();
+    </script>
+    
 </body>
 </html>
