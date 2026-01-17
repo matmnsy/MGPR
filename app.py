@@ -516,35 +516,36 @@ def admin_reveal():
 
     reveal_results = True
 
+    # Pas d'élimination si pas de votes ou que tout est à 0
     if not votes:
         return redirect(url_for("admin_dashboard"))
 
     max_votes = max(votes.values())
-    if max_votes == 0:
+    if max_votes <= 0:
         return redirect(url_for("admin_dashboard"))
 
     top_voted = [j for j, v in votes.items() if v == max_votes]
 
-    # ---- RÈGLES ----
-
-    # 1) ÉGALITÉ → personne n'est éliminé
+    # Égalité => on ne tue personne (à ajuster si tu veux une autre règle)
     if len(top_voted) != 1:
         return redirect(url_for("admin_dashboard"))
 
     eliminated = top_voted[0]
 
-    # 2) Si déjà éliminé → on ne fait rien
+    # Déjà éliminé => rien
     if eliminated in eliminated_players:
         return redirect(url_for("admin_dashboard"))
 
-    # 3) COUPLE : si l’un meurt, l’autre aussi
+    # Élimination
     eliminated_players.add(eliminated)
 
+    # Couple : si l'un meurt, l'autre aussi
     if eliminated in couple_players:
         for p in couple_players:
             eliminated_players.add(p)
 
     return redirect(url_for("admin_dashboard"))
+
 
 
 @app.route("/admin/next_night")
