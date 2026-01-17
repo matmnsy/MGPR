@@ -280,7 +280,8 @@ def vote(votant, cible):
         return "Impossible de voter pour vous-même", 400
 
     if cible in eliminated_players:
-        return "Ce joueur est éliminé", 400
+        return redirect(url_for("vote_page", votant=votant))
+
 
     if votant in joueurs_ayant_vote:
         return redirect(url_for("vote_page", votant=votant))
