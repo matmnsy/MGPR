@@ -171,8 +171,45 @@
     }
 
     .btn-new-game { margin-left: auto; }
-    .btn-danger { background: #c0392b; }
-    .btn-danger:hover { background: #e74c3c; }
+    .btn-danger { background: #2aa; }
+    .btn-danger:hover { background: rgb(103, 191, 191); }
+
+    /* ===========================
+   BOUTONS SPÉCIAUX ADMIN
+   =========================== */
+
+    /* Couple maudit */
+    .btn-couple {
+      background: #a61b20;
+    }
+    .btn-couple:hover {
+      background: #c7373c;
+    }
+
+    /* Esprit farceur */
+    .btn-farceur {
+      background: #d3b44f;
+      color: #111;
+    }
+    .btn-farceur:hover {
+      background: #e8cc6a;
+    }
+
+    /* Nécro – messages */
+    .btn-necro {
+      background: #704720;
+    }
+    .btn-necro:hover {
+      background: #8a5b2f;
+    }
+
+    /* Exorciste */
+    .btn-exorciste {
+      background: #703369;
+    }
+    .btn-exorciste:hover {
+      background: #8b4a84;
+    }
   </style>
 </head>
 
@@ -206,12 +243,13 @@
          Prochaine nuit
       </a>
 
-      <a class="btn secondary" href="{{ url_for('admin_esprit_farceur') }}">Esprit farceur</a>
-      <a class="btn secondary" href="{{ url_for('admin_couple') }}">Couple maudit</a>
-      <a class="btn secondary" href="{{ url_for('admin_necro_chat') }}">Nécro – messages</a>
+      <a class="btn btn-couple" href="{{ url_for('admin_couple') }}">Couple maudit</a>
+      <a class="btn btn-farceur" href="{{ url_for('admin_esprit_farceur') }}">Esprit farceur</a>
+      <a class="btn btn-necro" href="{{ url_for('admin_necro_chat') }}">Nécro – messages</a>
+      <a class="btn btn-exorciste" href="{{ url_for('admin_exorciste') }}">Exorciste</a>
+
       <a class="btn secondary" href="{{ url_for('admin_logout') }}">Logout</a>
-      <a class="btn secondary" href="{{ url_for('admin_exorciste') }}">Exorciste</a>
-      
+
 
       <!-- TOUJOURS EN DERNIER -->
       <a class="btn btn-danger btn-new-game"
