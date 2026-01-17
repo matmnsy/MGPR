@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Admin — Exorciste</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background:
+        linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+        url("{{ url_for('static', filename='fond.png') }}") center/cover no-repeat;
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .box {
+      background: rgba(0,0,0,0.7);
+      padding: 28px;
+      border-radius: 14px;
+      max-width: 420px;
+      width: 90%;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    h1 {
+      margin-top: 0;
+      color: #ff5555;
+    }
+
+    select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      margin-top: 12px;
+      font-size: 14px;
+    }
+
+    .btn {
+      margin-top: 18px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: none;
+      background: #ff5555;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .info {
+      margin-top: 12px;
+      font-size: 13px;
+      color: #ccc;
+    }
+
+    .back {
+      margin-top: 16px;
+      display: inline-block;
+      font-size: 13px;
+      color: #ddd;
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="box">
+  <h1>Exorciste</h1>
+
+  <p>
+    Choisissez un joueur qui <strong>ne pourra pas voter</strong>
+    lors de la <strong>prochaine phase de vote</strong>.
+  </p>
+
+  <form method="post">
+    <select name="joueur" required>
+      <option value="">— Choisir un joueur —</option>
+      {% for j in joueurs %}
+        {% if j not in eliminated_players %}
+          <option value="{{ j }}"
+            {% if exorcised_player == j %}selected{% endif %}>
+            Joueur {{ j }}
+          </option>
+        {% endif %}
+      {% endfor %}
+    </select>
+
+    <button class="btn" type="submit">
+      Confirmer l’exorcisme
+    </button>
+  </form>
+
+  {% if exorcised_player %}
+    <div class="info">
+      Joueur {{ exorcised_player }} est actuellement exorcisé.
+    </div>
+  {% endif %}
+
+  <a class="back" href="{{ url_for('admin_dashboard') }}">
+    ← Retour au dashboard
+  </a>
+</div>
+
+</body>
+</html>

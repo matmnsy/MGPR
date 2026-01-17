@@ -46,6 +46,7 @@ def api_spectator_state():
 
 # Joueurs (1 à 12)
 joueurs = [str(i) for i in range(1, 13)]
+exorcised_player = None
 
 # === LISTE DES RÔLES DE BASE ===
 base_roles = [
@@ -220,6 +221,10 @@ def vote_page(votant):
     if votant in eliminated_players:
         already_sent = player_has_last_will(votant)
         return render_template("eliminated.html", votant=votant, already_sent=already_sent)
+        # Joueur exorcisé : ne peut pas voter ce tour
+    if exorcised_player == votant and admin_started:
+        return render_template("waiting.html", votant=votant, role=None)
+
 
     if not admin_started:
         # 1 entrée par joueur (donc 12 icônes, dont 3 démons)
@@ -300,9 +305,11 @@ def vote(votant, cible):
     if cible in eliminated_players:
         return redirect(url_for("vote_page", votant=votant))
 
-
     if votant in joueurs_ayant_vote:
         return redirect(url_for("vote_page", votant=votant))
+    
+    if exorcised_player == votant:
+        return "Vous êtes exorcisé et ne pouvez pas voter ce tour.", 403
 
     joueur_vote_pour[votant] = cible
     votes[cible] += 1
@@ -423,13 +430,11 @@ def reset_all():
 
 
 def reset_round_keep_eliminated():
-    """
-    Prochaine nuit : on garde les éliminés et les messages,
-    mais on ferme la phase de vote et on remet les votes à zéro.
-    """
-    global admin_started
+    global admin_started, exorcised_player
     reset_votes_only()
     admin_started = False
+    exorcised_player = None   # l’exorcisme ne dure qu’un tour
+
 
 # -----------------------------------------------------
 # ADMIN
@@ -712,6 +717,23 @@ def dead_message(joueur):
         already_sent=already_sent,
     )
 
+@app.route("/admin/exorciste", methods=["GET", "POST"])
+@admin_required
+def admin_exorciste():
+    global exorcised_player
+
+    if request.method == "POST":
+        joueur = request.form.get("joueur")
+        if joueur in joueurs:
+            exorcised_player = joueur
+        return redirect(url_for("admin_dashboard"))
+
+    return render_template(
+        "admin_exorciste.html",
+        joueurs=joueurs,
+        exorcised_player=exorcised_player,
+        eliminated_players=eliminated_players
+    )
 
 # -----------------------------------------------------
 # NÉCROMANCIEN : VUE DES MESSAGES RÉVÉLÉS
