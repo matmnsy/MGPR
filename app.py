@@ -741,6 +741,28 @@ def spectator():
 
     return render_template("spectator_dashboard.html", spectator_key=SPECTATOR_KEY)
 
+@app.route("/api/admin_state")
+@admin_required
+def api_admin_state():
+    total_voters = len(joueurs_ayant_vote)
+    all_voted = (total_voters == len(joueurs))
+
+    max_votes_value = max(votes.values()) if votes else 0
+    top_voted_players = [j for j, v in votes.items() if v == max_votes_value] if max_votes_value > 0 else []
+
+    return jsonify({
+        "votes": votes,  # { "1": 0, ... }
+        "joueurs_ayant_vote": list(joueurs_ayant_vote),
+        "total_voters": total_voters,
+        "all_voted": all_voted,
+        "admin_started": admin_started,
+        "reveal_results": reveal_results,
+        "eliminated_players": list(eliminated_players),
+        "top_voted_players": top_voted_players,
+        "max_votes": max_votes_value,
+    })
+
+
 
 # -----------------------------------------------------
 # DÉMARRAGE
