@@ -222,7 +222,28 @@ def vote_page(votant):
         return render_template("eliminated.html", votant=votant, already_sent=already_sent)
 
     if not admin_started:
-        return render_template("welcome.html", votant=votant)
+    # Rôles présents dans la partie + état éliminé (au moins 1 joueur de ce rôle éliminé)
+        roles_state = {}
+        for j in joueurs:
+            r = roles.get(j)
+            if not r:
+                continue
+            name = r["name"]
+            if name not in roles_state:
+                roles_state[name] = {
+                    "icon_list": r.get("icon_list") or r.get("icon"),
+                    "eliminated": False,
+                }
+            if j in eliminated_players:
+                roles_state[name]["eliminated"] = True
+
+        # liste stable pour le template
+        roles_state_list = [
+            {"name": name, **info} for name, info in roles_state.items()
+        ]
+
+        return render_template("welcome.html", votant=votant, roles_state=roles_state_list)
+
 
     if votant in joueurs_ayant_vote:
 
