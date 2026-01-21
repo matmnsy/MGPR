@@ -9,14 +9,24 @@
 <h2>Envoyer un message</h2>
 
 <form method="post">
-  <label>Joueur :</label><br>
-  <select name="joueur" required>
-    {% for j in joueurs %}
-      <option value="{{ j }}">Joueur {{ j }}</option>
-    {% endfor %}
+  <label>Cible :</label><br>
+  <select name="target" id="target" required>
+    <option value="single" selected>Un joueur</option>
+    <option value="all">Tous les joueurs</option>
+    <option value="demons">Tous les démons</option>
   </select>
 
   <br><br>
+
+  <div id="singlePlayerBlock">
+    <label>Joueur :</label><br>
+    <select name="joueur" id="joueur">
+      {% for j in joueurs %}
+        <option value="{{ j }}">Joueur {{ j }}</option>
+      {% endfor %}
+    </select>
+    <br><br>
+  </div>
 
   <label>Message :</label><br>
   <textarea name="message" rows="4" cols="40" required></textarea>
@@ -28,6 +38,21 @@
 
 <br>
 <a href="{{ url_for('admin_dashboard') }}">⬅ Retour</a>
+
+<script>
+  const target = document.getElementById('target');
+  const singleBlock = document.getElementById('singlePlayerBlock');
+  const joueurSelect = document.getElementById('joueur');
+
+  function refresh() {
+    const isSingle = (target.value === 'single');
+    singleBlock.style.display = isSingle ? 'block' : 'none';
+    joueurSelect.required = isSingle;
+  }
+
+  target.addEventListener('change', refresh);
+  refresh();
+</script>
 
 </body>
 </html>

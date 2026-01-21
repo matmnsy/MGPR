@@ -316,6 +316,47 @@ def api_messages_read(joueur):
 @app.route("/admin/message", methods=["GET", "POST"])
 @admin_required
 def admin_message():
+    if request.method == "POST":
+        target = request.form.get("target", "single")  # single | all | demons
+        joueur = request.form.get("joueur")           # utilisé si single
+        text = request.form.get("message", "").strip()
+
+        if not text:
+            return redirect(url_for("admin_dashboard"))
+
+        if target == "all":
+            push_admin_message(joueurs, text)
+
+        elif target == "demons":
+            demon_players = get_players_by_role("Démon")
+            push_admin_message(demon_players, text)
+
+        else:
+            # single
+            if joueur in joueurs:
+                push_admin_message([joueur], text)
+
+        return redirect(url_for("admin_dashboard"))
+
+    return render_template("admin_message.html", joueurs=joueurs)
+
+def get_players_by_role(role_name: str):
+    """Retourne la liste des joueurs dont le rôle (name) correspond."""
+    return [j for j, r in roles.items() if r and r.get("name") == role_name]
+
+def push_admin_message(target_players, text: str):
+    """Ajoute un message admin à une liste de joueurs."""
+    global admin_msg_next_id
+    for j in target_players:
+        if j in joueurs:
+            admin_messages[j].append({
+                "id": admin_msg_next_id,
+                "text": text,
+                "read": False,
+            })
+            admin_msg_next_id += 1
+
+def admin_message():
     global admin_msg_next_id
 
     if request.method == "POST":
