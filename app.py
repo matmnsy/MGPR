@@ -505,6 +505,7 @@ def reset_all():
     """
     global votes, joueurs_ayant_vote, joueur_vote_pour, admin_started, reveal_results
     global eliminated_players, couple_players, necro_messages, necro_next_id
+    global admin_messages, admin_msg_next_id, exorcised_player
 
     reset_votes_only()
     eliminated_players.clear()
@@ -512,7 +513,10 @@ def reset_all():
 
     necro_messages.clear()
     necro_next_id = 1
+    admin_messages = {j: [] for j in joueurs}
+    admin_msg_next_id = 1
 
+    exorcised_player = None
     admin_started = False
     reveal_results = False
     assign_random_roles()
