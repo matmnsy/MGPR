@@ -129,7 +129,15 @@
     }
 
     .table-wrapper { width: 100%; overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; min-width: 500px; }
+    table{
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+    th, td{
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
     th, td {
       padding: 8px;
@@ -216,6 +224,22 @@
     }
     .btn-resurrect:hover{
       background: #49df86;
+    }
+    /* Colonne Action */
+    th.action-col,
+    td.action-col {
+      width: 120px;
+      text-align: center;
+    }
+    .action-btn{
+      display: inline-block;
+      width: 100%;
+      max-width: 110px;
+      padding: 6px 8px;
+      font-size: 13px;
+      border-radius: 8px;
+      text-align: center;
+      box-sizing: border-box;
     }
 
   </style>
@@ -326,7 +350,7 @@
           <th>Rôle</th>
           <th>Statut</th>
           <th>Votes</th>
-          <th>Action</th>
+          <th class="action-col">Action</th>
         </tr>
         </thead>
 
@@ -356,15 +380,15 @@
 
             <td id="votes-row-{{ j }}">{{ votes[j] }}</td>
 
-            <td id="action-row-{{ j }}">
+            <td class="action-col" id="action-row-{{ j }}">
               {% if j in eliminated_players %}
-                <a class="btn btn-resurrect"
+                <a class="btn btn-resurrect action-btn"
                    href="{{ url_for('admin_resurrect', joueur=j) }}"
                    onclick="return confirm('Ressusciter ce joueur ?');">
                   Ressusciter
                 </a>
               {% else %}
-                <a class="btn secondary"
+                <a class="btn secondary action-btn"
                    href="{{ url_for('admin_eliminate', joueur=j) }}"
                    onclick="return confirm('Éliminer ce joueur ?');">
                   Éliminer
@@ -468,14 +492,14 @@
         if (ar) {
           if (eliminated.has(j)) {
             ar.innerHTML = `
-              <a class="btn btn-resurrect"
+              <a class="btn btn-resurrect action-btn"
                 href="/admin/resurrect/${j}"
                 onclick="return confirm('Ressusciter ce joueur ?');">
                 Ressusciter
               </a>`;
           } else {
             ar.innerHTML = `
-              <a class="btn secondary"
+              <a class="btn secondary action-btn"
                 href="/admin/eliminate/${j}"
                 onclick="return confirm('Éliminer ce joueur ?');">
                 Éliminer
