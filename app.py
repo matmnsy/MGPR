@@ -245,7 +245,7 @@ def vote_page(votant):
         # ordre aléatoire à chaque rendu
         random.shuffle(roles_state_list)
 
-        return render_template("welcome.html", votant=votant, roles_state=roles_state_list)
+        return render_template("welcome.html", votant=votant, roles_state=roles_state_list, roles=roles)
 
 
 
@@ -678,6 +678,21 @@ def admin_eliminate(joueur):
     if joueur in joueurs:
         eliminated_players.add(joueur)
     return redirect(url_for("admin_dashboard"))
+
+@app.route("/admin/resurrect/<joueur>")
+@admin_required
+def admin_resurrect(joueur):
+    if joueur in joueurs:
+        eliminated_players.discard(joueur)
+
+        # Optionnel : si tu veux aussi "réanimer" l'amoureux automatiquement
+        # (je te conseille de NE PAS le faire automatiquement)
+        # if joueur in couple_players:
+        #     for p in couple_players:
+        #         eliminated_players.discard(p)
+
+    return redirect(url_for("admin_dashboard"))
+
 
 
 # -----------------------------------------------------

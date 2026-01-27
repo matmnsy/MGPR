@@ -145,6 +145,27 @@
         letter-spacing: 0.5px;
         color: #ff5555;
       }
+      .btn-necro{
+        display: inline-block;
+        margin-top: 10px;
+        border: 1px solid rgba(255, 170, 90, 0.9);
+        border-radius: 999px;
+        padding: 8px 12px;
+        font-size: 0.95rem;
+        text-decoration: none;
+        color: #ffb27a;
+        background: rgba(0,0,0,0.35);
+        white-space: nowrap;
+      }
+      @media (max-width: 600px){
+        .btn-necro{
+          display:block;
+          margin: 12px auto 0;
+          width: 100%;
+          max-width: 260px;
+        }
+      }
+
 
 
     </style>
@@ -173,6 +194,12 @@
     <p>Attendez que le maître du jeu lance la phase de vote.</p>
     <a class="btn-role" href="{{ url_for('view_role', votant=votant) }}">Voir mon rôle</a>
   </div>
+
+  {% if roles.get(votant) and roles.get(votant).name == "Nécromancien" %}
+  <a class="btn-necro" href="{{ url_for('necro_chat', joueur=votant) }}">
+    Voir les messages des morts
+  </a>
+  {% endif %}
 
   <script>
     (function poll(){

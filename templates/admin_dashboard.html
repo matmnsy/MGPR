@@ -210,6 +210,14 @@
     .btn-exorciste:hover {
       background: #8b4a84;
     }
+    .btn-resurrect{
+      background: #2ecc71;        /* vert */
+      color: #111;
+    }
+    .btn-resurrect:hover{
+      background: #49df86;
+    }
+
   </style>
 </head>
 
@@ -348,9 +356,13 @@
 
             <td id="votes-row-{{ j }}">{{ votes[j] }}</td>
 
-            <td>
+            <td id="action-row-{{ j }}">
               {% if j in eliminated_players %}
-                —
+                <a class="btn btn-resurrect"
+                   href="{{ url_for('admin_resurrect', joueur=j) }}"
+                   onclick="return confirm('Ressusciter ce joueur ?');">
+                  Ressusciter
+                </a>
               {% else %}
                 <a class="btn secondary"
                    href="{{ url_for('admin_eliminate', joueur=j) }}"
@@ -409,12 +421,14 @@
       const voted = new Set((data.joueurs_ayant_vote || []).map(String));
       const eliminated = new Set((data.eliminated_players || []).map(String));
       const top = new Set((data.top_voted_players || []).map(String));
+      
 
       Object.entries(data.votes || {}).forEach(([j, v]) => {
         j = String(j);
 
         // GRID votes
         const vc = document.getElementById(`votes-card-${j}`);
+        
         if (vc) vc.textContent = `Votes : ${v}`;
 
         // GRID statut
@@ -448,6 +462,24 @@
             nameCell.classList.add('top-voted');
           } else {
             nameCell.classList.remove('top-voted');
+          }
+        }
+        const ar = document.getElementById(`action-row-${j}`);
+        if (ar) {
+          if (eliminated.has(j)) {
+            ar.innerHTML = `
+              <a class="btn btn-resurrect"
+                href="/admin/resurrect/${j}"
+                onclick="return confirm('Ressusciter ce joueur ?');">
+                Ressusciter
+              </a>`;
+          } else {
+            ar.innerHTML = `
+              <a class="btn secondary"
+                href="/admin/eliminate/${j}"
+                onclick="return confirm('Éliminer ce joueur ?');">
+                Éliminer
+              </a>`;
           }
         }
       });
